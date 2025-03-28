@@ -20,7 +20,7 @@ return new class extends Migration
             $table->longText('pilihan_b')->nullable();
             $table->longText('pilihan_c')->nullable();
             $table->longText('pilihan_d')->nullable();
-            $table->string('correct_answer', 45);
+            $table->string('correct_answer', 45)->nullable();
             $table->timestamps();
         });        
     }
