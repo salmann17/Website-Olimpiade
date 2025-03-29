@@ -3,7 +3,7 @@
     $user = Auth::user(); // Ambil data user yang sedang login
 @endphp
 
-<div class="w-64 min-h-screen bg-gradient-to-b from-blue-800 to-indigo-600 text-white p-6 shadow-lg flex flex-col justify-between">
+<div class="w-64 min-h-screen bg-gradient-to-b from-[#5f27cd] to-[#48dbfb] text-white p-6 shadow-lg flex flex-col justify-between">
     {{-- Header --}}
     <div>
         <div class="flex items-center justify-between mb-6">
