@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class IsPeserta
 {
@@ -13,12 +15,11 @@ class IsPeserta
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        if (session('user') && session('user')->role === 'peserta') {
+        if (Auth::check() && Auth::user()->role === 'peserta') {
             return $next($request);
         }
-
         return redirect()->route('login');
     }
 }

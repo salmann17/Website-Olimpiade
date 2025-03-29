@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login'); // nanti kita buat view-nya
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -20,21 +20,27 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('username', $credentials['username'])
-            ->where('password', md5($credentials['password']))
-            ->first();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate(); 
 
-        if ($user) {
-            session(['user' => $user]); // simpan user ke session
-            return redirect()->route($user->role === 'admin' ? 'admin.dashboard' : 'peserta.dashboard');
+            $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('peserta.dashboard');
+            }
         }
 
-        return back()->withErrors(['login_gagal' => 'Username atau password salah.']);
+        return back()->withErrors([
+            'login_gagal' => 'Username atau password salah.',
+        ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget('user');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 }

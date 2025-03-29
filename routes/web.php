@@ -1,16 +1,25 @@
 <?php
-
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsPeserta;
 
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/', [LoginController::class, 'login'])->name('login.submit');
+Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware('admin')->group(function () {
-    Route::get('/admin/dashboard', function () {return 'Halaman Admin';})->name('admin.dashboard');
+Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(function () {
+
+    Route::middleware([IsAdmin::class])->group(function () {
+        Route::get('/admin/dashboard', function () {return view('admin.dashboard');})->name('admin.dashboard');
+
+    });
+
+
+    Route::middleware([IsPeserta::class])->group(function () {
+        Route::get('/peserta/dashboard', function () {return view('peserta.dashboard');})->name('peserta.dashboard');
+
+
+    });
 });
 
-Route::middleware('peserta')->group(function () {
-    Route::get('/peserta/dashboard', function () {return 'Halaman Peserta';})->name('peserta.dashboard');
-});

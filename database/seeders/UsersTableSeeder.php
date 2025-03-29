@@ -16,16 +16,16 @@ class UsersTableSeeder extends Seeder
     {
         User::create([
             'username' => 'admin',
-            'password' => md5('root'),
-            'fullname' => 'Admin Root',
-            'role' => 'admin'
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+            'fullname' => 'Administrator',
         ]);
 
         User::create([
             'username' => 'peserta',
-            'password' => md5('root'),
-            'fullname' => 'Peserta Root',
-            'role' => 'peserta'
+            'password' => Hash::make('peserta123'),
+            'role' => 'peserta',
+            'fullname' => 'Peserta',
         ]);
     }
 }
