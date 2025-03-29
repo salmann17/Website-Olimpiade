@@ -2,15 +2,17 @@
     use Illuminate\Support\Facades\Auth;
     $user = Auth::user(); // Ambil data user yang sedang login
 @endphp
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 
 <div class="w-64 min-h-screen bg-gradient-to-b from-[#5f27cd] to-[#48dbfb] text-white p-6 shadow-lg flex flex-col justify-between">
     {{-- Header --}}
     <div>
         <div class="flex items-center justify-between mb-6">
             <img src="{{ asset('logo.png') }}" alt="Logo" class="h-10">
-            <button id="sidebarToggle" class="text-white">
+            <!-- <button id="sidebarToggle" class="text-white">
                 <i class="fas fa-bars"></i>
-            </button>
+            </button> -->
         </div>
 
         {{-- Greeting --}}
