@@ -17,9 +17,14 @@ class IsPeserta
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === 'peserta') {
-            return $next($request);
+        if (Auth::check()) {
+            logger('Role user: ' . Auth::user()->role);
+            if (Auth::user()->role === 'peserta') {
+                return $next($request);
+            }
         }
+
+        logger('Redirecting to login from IsPeserta middleware');
         return redirect()->route('login');
     }
 }

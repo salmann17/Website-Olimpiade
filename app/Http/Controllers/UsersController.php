@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\QuizSchedule;
 use App\Models\QuizSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -11,14 +12,12 @@ class UsersController extends Controller
 {
     public function dashboardPeserta()
     {
-        $userId = Auth::id();
-        $sessions = QuizSession::where('user_id', $userId)->get()->keyBy('babak');
+        $user = Auth::user();
 
-        // Hitung jumlah soal per babak
-        $jumlahSoal = Question::selectRaw('babak, COUNT(*) as total')
-            ->groupBy('babak')
-            ->pluck('total', 'babak'); // hasil: [1 => 20, 2 => 30, ...]
+        $schedules = QuizSchedule::with('questions')->get();
 
-        return view('peserta.dashboard', compact('sessions', 'jumlahSoal'));
+        $userSessions = QuizSession::where('user_id', $user->id)->get()->keyBy('quiz_schedule_id');
+
+        return view('peserta.dashboard', compact('schedules', 'userSessions'));
     }
 }
