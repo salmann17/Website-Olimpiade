@@ -13,28 +13,34 @@ class QuestionsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Question::create([
-            'babak' => 1,
-            'type' => 'multiple_choice',
-            'question' => 'Apa yang dimaksud dengan inflasi?',
-            'pilihan_a' => 'Penurunan harga barang',
-            'pilihan_b' => 'Kenaikan harga secara umum',
-            'pilihan_c' => 'Kenaikan upah minimum',
-            'pilihan_d' => 'Penurunan nilai mata uang asing',
-            'correct_answer' => 'B',
-        ]);
+        $scheduleIds = [1, 2, 3];
+        $questionTypes = ['multiple_choice', 'true_false', 'text_input'];
 
-        Question::create([
-            'babak' => 2,
-            'type' => 'true_false',
-            'question' => 'Pajak adalah sumber pendapatan negara.',
-            'correct_answer' => 'true',
-        ]);
+        foreach ($scheduleIds as $scheduleId) {
+            $total = match($scheduleId) {
+                1 => 10,
+                2 => 15,
+                3 => 20,
+            };
 
-        Question::create([
-            'babak' => 3,
-            'type' => 'text_input',
-            'question' => 'Sebutkan salah satu jenis pajak tidak langsung!',
-        ]);
+            for ($i = 1; $i <= $total; $i++) {
+                $type = $questionTypes[array_rand($questionTypes)];
+
+                Question::create([
+                    'quiz_schedule_id' => $scheduleId,
+                    'type' => $type,
+                    'question' => "Soal ke-$i untuk babak $scheduleId",
+                    'pilihan_a' => $type === 'multiple_choice' ? 'Pilihan A' : null,
+                    'pilihan_b' => $type === 'multiple_choice' ? 'Pilihan B' : null,
+                    'pilihan_c' => $type === 'multiple_choice' ? 'Pilihan C' : null,
+                    'pilihan_d' => $type === 'multiple_choice' ? 'Pilihan D' : null,
+                    'correct_answer' => match($type) {
+                        'multiple_choice' => ['A', 'B', 'C', 'D'][rand(0, 3)],
+                        'true_false' => 'true',
+                        default => null
+                    }
+                ]);
+            }
+        }
     }
 }

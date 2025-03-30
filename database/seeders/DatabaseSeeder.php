@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
+            QuizScheduleSeeder::class,
             UsersTableSeeder::class,
             QuestionsTableSeeder::class,
             QuizSessionsTableSeeder::class,
             QuizAnswerTableSeeder::class,
-            QuizScheduleSeeder::class,
         ]);
     }
 }

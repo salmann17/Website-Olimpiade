@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QuizAnswer extends Model
 {
-    protected $table = 'quiz_answer';
+    protected $table = 'quiz_answers';
     protected $primaryKey = 'idquiz_answers';
 
     protected $fillable = [
