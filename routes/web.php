@@ -17,7 +17,7 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
 
 
     Route::middleware([IsPeserta::class])->group(function () {
-        Route::get('/peserta/dashboard', function () {return view('peserta.dashboard');})->name('peserta.dashboard');
+        Route::get('/peserta/dashboard', [\App\Http\Controllers\UsersController::class, 'dashboardPeserta'])->name('peserta.dashboard');
 
 
     });

@@ -31,4 +31,8 @@ class QuizSession extends Model
     {
         return $this->hasMany(QuizAnswer::class, 'session_id');
     }
+    public function schedule()
+    {
+        return $this->belongsTo(QuizSchedule::class, 'quiz_schedule_id');
+    }
 }

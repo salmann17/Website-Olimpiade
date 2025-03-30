@@ -12,18 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('quiz_sessions', function (Blueprint $table) {
-            $table->id('idquiz_sessions');
-            $table->unsignedBigInteger('user_id'); 
-            $table->integer('babak');
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('quiz_schedule_id')->constrained('quiz_schedules')->onDelete('cascade');
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
-            $table->integer('duration')->nullable();
             $table->integer('skor')->default(0);
             $table->integer('warning_count')->default(0);
-            $table->enum('status', ['in_progress', 'submitted', 'force_submitted']);
+            $table->enum('status', ['not_started', 'in_progress', 'submitted', 'force_submitted']);
             $table->timestamps();
-            $table->foreign('user_id')->references('idusers')->on('users')->onDelete('cascade');
-        });        
+        });
     }
 
     /**
