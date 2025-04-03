@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class QuizSession extends Model
 {
     protected $table = 'quiz_sessions';
-    protected $primaryKey = 'idquiz_sessions';
+    // protected $primaryKey = 'idquiz_sessions';
 
     protected $fillable = [
         'user_id',
+        'quiz_schedule_id',
         'babak',
         'start_time',
         'end_time',

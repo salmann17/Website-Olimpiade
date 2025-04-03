@@ -12,68 +12,49 @@ use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
+    // 1. Mulai Ujian: Insert record quiz session dan render view ujian
     public function start(Request $request, QuizSchedule $schedule)
     {
         $user = Auth::user();
-        $session = QuizSession::firstOrCreate([
-            'user_id' => $user->id,
-            'quiz_schedule_id' => $schedule->id
-        ], [
-            'start_time' => now(),
-            'status' => 'in_progress'
+
+        // Buat record baru di quiz_sessions
+        $quizSession = QuizSession::create([
+            'user_id'           => $user->id,
+            'quiz_schedule_id'  => $schedule->id,
+            'start_time'        => now(),
+            'status'            => 'in_progress',
+            'warning_count'     => 0,
         ]);
 
-        $questions = Question::where('quiz_schedule_id', $schedule->id)->get();
-        $answers = QuizAnswer::where('quiz_session_id', $session->id)->pluck('answer', 'question_id');
-
-        return view('quiz.start', compact('schedule', 'questions', 'answers', 'session'));
+        // Render view ujian dan kirim data schedule dan quizSession
+        return view('quiz.start', compact('schedule', 'quizSession'));
     }
 
-    public function submitAnswer(Request $request, QuizSchedule $schedule)
-    {
-        $session = QuizSession::where('user_id', Auth::id())
-                    ->where('quiz_schedule_id', $schedule->id)->firstOrFail();
-
-        QuizAnswer::updateOrCreate(
-            [
-                'quiz_session_id' => $session->id,
-                'question_id' => $request->question_id
-            ],
-            ['answer' => $request->answer]
-        );
-
-        return response()->json(['status' => 'saved']);
-    }
-
+    // 3. Endpoint untuk meng-update warning_count pertama kali
     public function warning(Request $request, QuizSchedule $schedule)
     {
-        $session = QuizSession::where('user_id', Auth::id())
-                    ->where('quiz_schedule_id', $schedule->id)->firstOrFail();
+        $quizSession = QuizSession::findOrFail($request->quiz_session_id);
+        $quizSession->warning_count = 1;
+        $quizSession->save();
 
-        $session->increment('warning_count');
-
-        if ($session->warning_count >= 2) {
-            $session->update([
-                'status' => 'force_submitted',
-                'end_time' => now(),
-            ]);
-            return response()->json(['force_submit' => true]);
-        }
-
-        return response()->json(['warning_count' => $session->warning_count]);
+        return response()->json([
+            'message' => 'Warning issued',
+            'warning_count' => $quizSession->warning_count
+        ]);
     }
 
+    // 4. Endpoint untuk meng-update warning_count kedua (force finish)
     public function finish(Request $request, QuizSchedule $schedule)
     {
-        $session = QuizSession::where('user_id', Auth::id())
-                    ->where('quiz_schedule_id', $schedule->id)->firstOrFail();
+        $quizSession = QuizSession::findOrFail($request->quiz_session_id);
+        $quizSession->warning_count = 2;
+        $quizSession->status = 'force_submitted';
+        $quizSession->end_time = now();
+        $quizSession->save();
 
-        $session->update([
-            'status' => 'submitted',
-            'end_time' => now(),
+        return response()->json([
+            'message' => 'Exam force submitted',
+            'status' => $quizSession->status
         ]);
-
-        return redirect()->route('peserta.dashboard')->with('success', 'Jawaban berhasil dikirim!');
     }
 }
-

@@ -1,6 +1,10 @@
 @extends('layout.app')
 
 @section('content')
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
 <div class="flex items-center justify-center min-h-screen px-4">
     <div class="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
         @foreach ($schedules as $schedule)
@@ -36,7 +40,9 @@
             </div>
             @elseif ($now->between($schedule->start_time, $schedule->end_time))
             <div class="bg-blue-600 hover:bg-blue-700 text-white text-center py-2">
-                <a href="#" class="inline-flex items-center gap-2 justify-center">
+                <a href="javascript:void(0)"
+                    onclick="openExamWindow({{ $schedule->id }})"
+                    class="inline-flex items-center gap-2 justify-center">
                     <i class="fas fa-play"></i> Mulai
                 </a>
             </div>
@@ -51,3 +57,24 @@
     </div>
 </div>
 @endsection
+<script>
+    function openExamWindow(scheduleId) {
+        // Susun URL untuk memulai ujian, misalnya: /quiz/{schedule}
+        const url = "{{ url('/quiz') }}/" + scheduleId;
+
+        // Gunakan window.open() dengan parameter agar toolbar, dsb. disembunyikan
+        // Serta set ukuran = layar penuh (width & height)
+        const features = "toolbar=no,location=no,directories=no,status=no,menubar=no," +
+            "scrollbars=yes,resizable=yes," +
+            "width=" + screen.width + ",height=" + screen.height + "," +
+            "left=0,top=0";
+
+        const examWindow = window.open(url, "_blank", features);
+
+        if (examWindow) {
+            examWindow.focus();
+        } else {
+            alert("Popup terblokir! Mohon izinkan popup untuk situs ini.");
+        }
+    }
+</script>
