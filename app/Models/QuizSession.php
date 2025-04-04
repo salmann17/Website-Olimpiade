@@ -23,6 +23,11 @@ class QuizSession extends Model
         'status',
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time'   => 'datetime',
+    ];
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -30,7 +35,7 @@ class QuizSession extends Model
 
     public function answers(): HasMany
     {
-        return $this->hasMany(QuizAnswer::class, 'session_id');
+        return $this->hasMany(QuizAnswer::class, 'quiz_session_id');
     }
     public function schedule()
     {

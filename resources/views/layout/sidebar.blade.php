@@ -40,7 +40,7 @@
 
             {{-- Tautan khusus Peserta --}}
             @if($user && $user->role === 'peserta')
-                <a href=""
+                <a href="{{ route('peserta.riwayat') }}"
                    class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
                     <i class="fas fa-history w-5"></i> Riwayat Ujian
                 </a>

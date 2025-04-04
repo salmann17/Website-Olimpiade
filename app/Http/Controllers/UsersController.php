@@ -24,15 +24,31 @@ class UsersController extends Controller
                 $schedule->status = $userSessions[$schedule->id]->status;
             } else {
                 if ($now->lt($schedule->start_time)) {
-                    $schedule->status = 'not_open'; 
+                    $schedule->status = 'not_open';
                 } elseif ($now->between($schedule->start_time, $schedule->end_time)) {
-                    $schedule->status = 'available'; 
+                    $schedule->status = 'available';
                 } else {
-                    $schedule->status = 'expired'; 
+                    $schedule->status = 'expired';
                 }
             }
         }
 
         return view('peserta.dashboard', compact('schedules', 'userSessions'));
+    }
+    
+    public function riwayatUjian()
+    {
+        $user = Auth::user();
+
+        // Ambil seluruh sesi ujian user yang sudah selesai (submitted / force_submitted)
+        $sessions = QuizSession::where('user_id', $user->id)
+            ->whereIn('status', ['submitted', 'force_submitted'])
+            ->with([
+                'schedule.questions', // load schedule + questions
+                'answers'            // load all answers
+            ])
+            ->get();
+
+        return view('peserta.riwayat', compact('sessions'));
     }
 }
