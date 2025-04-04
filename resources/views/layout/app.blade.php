@@ -11,6 +11,6 @@
 
   </div>
 </body>
-
+@stack('scripts')
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="icon" href="{{ asset('icon.png') }}" type="image/png">

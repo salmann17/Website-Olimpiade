@@ -17,6 +17,8 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
         Route::get('/admin/dashboard', function () {return view('admin.dashboard');})->name('admin.dashboard');
         Route::get('/admin/peserta/create', [AdminController::class, 'createPeserta'])->name('admin.peserta.create');
         Route::post('/admin/peserta/store', [AdminController::class, 'storePeserta'])->name('admin.peserta.store');
+        Route::get('/admin/peserta/list', [AdminController::class, 'listPeserta'])->name('admin.peserta.list');
+        Route::post('/admin/peserta/update', [AdminController::class, 'updatePeserta'])->name('admin.peserta.update');
     });
 
 

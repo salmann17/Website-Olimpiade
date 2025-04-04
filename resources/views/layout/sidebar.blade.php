@@ -36,7 +36,7 @@ $user = Auth::user(); // Ambil data user yang sedang login
                 class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
                 <i class="fa-solid fa-eye"></i> Pemantauan Ujian
             </a>
-            <a href=""
+            <a href="{{ route('admin.peserta.list') }}"
                 class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
                 <i class="fa-solid fa-list"></i> List Peserta
             </a>
