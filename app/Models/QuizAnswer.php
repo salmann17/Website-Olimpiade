@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class QuizAnswer extends Model
 {
     protected $table = 'quiz_answers';
-    protected $primaryKey = 'idquiz_answers';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'session_id',
+        'quiz_session_id',
         'question_id',
         'answer',
         'is_correct',
@@ -19,7 +19,7 @@ class QuizAnswer extends Model
 
     public function session(): BelongsTo
     {
-        return $this->belongsTo(QuizSession::class, 'session_id');
+        return $this->belongsTo(QuizSession::class, 'quiz_session_id');
     }
 
     public function question(): BelongsTo

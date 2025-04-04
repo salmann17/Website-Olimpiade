@@ -53,14 +53,44 @@ class QuizController extends Controller
     {
         $quizSession = QuizSession::findOrFail($request->quiz_session_id);
 
-        // Jika warning_count masih kurang dari 2, artinya user submit manual
+        // Simpan atau perbarui jawaban dengan pengecekan kebenaran
+        if ($request->has('answers') && is_array($request->input('answers'))) {
+            foreach ($request->input('answers') as $data) {
+                if (isset($data['question_id']) && isset($data['answer'])) {
+                    // Ambil soal untuk mengecek jawaban yang benar
+                    $question = Question::find($data['question_id']);
+                    $isCorrect = 0;
+                    if ($question) {
+                        // Samakan case keduanya sebelum dibandingkan
+                        $correctNormalized = strtolower($question->correct_answer);
+                        $answerNormalized  = strtolower($data['answer']);
+                    
+                        if ($correctNormalized === $answerNormalized) {
+                            $isCorrect = 1;
+                        }
+                    }
+                    
+                    // Gunakan updateOrCreate agar jawaban tersimpan (atau diperbarui)
+                    QuizAnswer::updateOrCreate(
+                        [
+                            'quiz_session_id' => $quizSession->id,  // Pastikan nama kolom sesuai dengan migrasi dan model
+                            'question_id' => $data['question_id'],
+                        ],
+                        [
+                            'answer' => $data['answer'],
+                            'is_correct' => $isCorrect,
+                        ]
+                    );
+                }
+            }
+        }
+
+        // Update status quiz_session: jika warning_count < 2, berarti submit manual → 'submitted'
         if ($quizSession->warning_count < 2) {
             $quizSession->status = 'submitted';
         } else {
-            // Jika sudah pelanggaran (warning_count >= 2), tetap force_submitted
             $quizSession->status = 'force_submitted';
         }
-
         $quizSession->end_time = now();
         $quizSession->save();
 
@@ -68,6 +98,7 @@ class QuizController extends Controller
             'message' => 'Exam submitted',
             'status' => $quizSession->status
         ]);
+        return redirect()->route('peserta.dashboard')->with('success', 'Jawaban berhasil dikirim!');
     }
 
     public function submitAnswer(Request $request, QuizSchedule $schedule)

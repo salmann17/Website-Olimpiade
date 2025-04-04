@@ -204,7 +204,7 @@
                         text: 'Anda telah melanggar aturan sebanyak 2 kali. Ujian dianggap selesai.',
                         icon: 'info'
                     }).then(() => {
-                        window.close();
+                        window.location.href = "{{ route('peserta.dashboard') }}";
                     });
                 }).catch(err => {
                     console.error("Force finish error: ", err);
@@ -293,7 +293,20 @@
 
         // Fungsi untuk submit ujian (digunakan saat waktu habis atau submit manual)
         function submitExam(autoSubmit) {
-            // Panggil endpoint finish untuk mengupdate end_time dan status quiz session
+            // Kumpulkan data jawaban dari setiap form
+            let finalAnswers = [];
+            document.querySelectorAll('.answer-form').forEach(form => {
+                const questionId = form.getAttribute('data-question-id');
+                let answerInput = form.querySelector('input[name="answer-' + questionId + '"]:checked');
+                let answer = answerInput ? answerInput.value : '';
+                finalAnswers.push({
+                    question_id: questionId,
+                    answer: answer
+                });
+            });
+
+            console.log("Submitting exam with answers:", finalAnswers);
+
             fetch("{{ route('quiz.finish', ['schedule' => $schedule->id]) }}", {
                     method: 'POST',
                     headers: {
@@ -301,20 +314,29 @@
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     body: JSON.stringify({
-                        quiz_session_id: "{{ $quizSession->id }}"
+                        quiz_session_id: "{{ $quizSession->id }}",
+                        answers: finalAnswers
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log("Finish endpoint returned:", data);
                     Swal.fire({
                         title: autoSubmit ? 'Waktu Habis' : 'Ujian Disubmit',
-                        text: autoSubmit ? 'Waktu ujian telah habis. Jawaban anda telah disimpan.' : 'Jawaban anda telah disimpan.',
+                        text: autoSubmit ?
+                            'Waktu ujian telah habis. Jawaban anda telah disimpan.' :
+                            'Jawaban anda telah disimpan.',
                         icon: 'info'
                     }).then(() => {
-                        window.close();
+                        window.close(); // Tutup jendela ujian setelah submit
                     });
                 })
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error("Error in submitExam:", err);
+                });
         }
 
         // Countdown Timer
