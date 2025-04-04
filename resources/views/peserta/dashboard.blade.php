@@ -1,22 +1,9 @@
 @extends('layout.app')
 
 @section('content')
-
-<head>
-    <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
 <div class="flex items-center justify-center min-h-screen px-4">
     <div class="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
         @foreach ($schedules as $schedule)
-        @php
-        $session = $userSessions[$schedule->id] ?? null;
-        $isNow = now()->between($schedule->start_time, $schedule->end_time);
-        @endphp
-        @php
-        $now = now();
-        @endphp
-
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="bg-blue-600 text-white p-4 flex justify-between">
                 <h3 class="font-bold">{{ strtoupper($schedule->title) }}</h3>
@@ -34,26 +21,27 @@
                 </p>
             </div>
 
-            {{-- STATUS BERDASARKAN WAKTU --}}
-            @if ($now->lt($schedule->start_time))
+            {{-- Tampilkan status berdasarkan flag yang telah ditetapkan --}}
+            @if ($schedule->status === 'not_open')
             <div class="bg-red-100 text-red-800 text-center py-2 font-semibold">
                 Belum dibuka
             </div>
-            @elseif ($now->between($schedule->start_time, $schedule->end_time))
+            @elseif ($schedule->status === 'available')
             <div class="bg-blue-600 hover:bg-blue-700 text-white text-center py-2">
-                <a href="javascript:void(0)"
-                    onclick="openExamWindow({{ $schedule->id }})"
-                    class="inline-flex items-center gap-2 justify-center">
+                <a href="javascript:void(0)" onclick="openExamWindow({{ $schedule->id }})" class="inline-flex items-center gap-2 justify-center">
                     <i class="fas fa-play"></i> Mulai
                 </a>
             </div>
-            @else
+            @elseif ($schedule->status === 'submitted' || $schedule->status === 'force_submitted')
             <div class="bg-green-100 text-green-800 text-center py-2 font-semibold">
                 Sudah dikerjakan
             </div>
+            @elseif ($schedule->status === 'expired')
+            <div class="bg-yellow-100 text-yellow-800 text-center py-2 font-semibold">
+                Waktu habis
+            </div>
             @endif
         </div>
-
         @endforeach
     </div>
 </div>
@@ -63,8 +51,7 @@
         // Susun URL untuk memulai ujian, misalnya: /quiz/{schedule}
         const url = "{{ url('/quiz') }}/" + scheduleId;
 
-        // Gunakan window.open() dengan parameter agar toolbar, dsb. disembunyikan
-        // Serta set ukuran = layar penuh (width & height)
+        // Buka pop-up window dengan parameter minimal UI
         const features = "toolbar=no,location=no,directories=no,status=no,menubar=no," +
             "scrollbars=yes,resizable=yes," +
             "width=" + screen.width + ",height=" + screen.height + "," +
