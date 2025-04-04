@@ -13,62 +13,63 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-gray-100">
-    <div id="exam-content" class="p-4">
-        <h1 class="text-center text-3xl font-bold my-4">Ujian Dimulai</h1>
+<body class="bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75] min-h-screen">
+    <div id="exam-content" class="p-6">
+        <h1 class="text-center text-3xl font-bold text-white my-4"></h1>
         <!-- Tombol untuk memulai fullscreen -->
-        <button id="start-fullscreen" class="bg-blue-600 text-white px-4 py-2 rounded">
-            Mulai Ujian
-        </button>
+        <div class="flex justify-center">
+            <button id="start-fullscreen" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded shadow-lg">
+                Mulai Ujian
+            </button>
+        </div>
 
         <!-- Countdown Timer (akan muncul setelah user klik Mulai Ujian) -->
-        <div id="countdown-timer" class="text-center py-2 bg-blue-600 text-white mt-4 hidden">
+        <div id="countdown-timer" class="text-center py-2 bg-blue-600 text-white mt-6 rounded hidden">
             Sisa Waktu: <span id="timer"></span>
         </div>
 
         <!-- Container Soal (hidden sampai Mulai Ujian ditekan) -->
-        <div id="questions-container" class="mt-4 hidden">
+        <div id="questions-container" class="mt-6 hidden">
             <!-- Soal-soal akan di-render di sini -->
             @foreach($questions as $question)
             <div class="question hidden" id="question-{{ $loop->index }}">
-                <h2 class="font-bold mb-2">Soal {{ $loop->iteration }}</h2>
-                <p class="mb-4">{!! nl2br(e($question->question)) !!}</p>
+                <h2 class="font-bold text-white mb-2">Soal {{ $loop->iteration }}</h2>
+                <p class="mb-4 text-white">{!! nl2br(e($question->question)) !!}</p>
                 @if($question->type === 'multiple_choice')
                 <form class="answer-form" data-question-id="{{ $question->id }}">
                     @if($question->pilihan_a)
-                    <div>
-                        <label>
-                            <input type="radio" name="answer-{{ $question->id }}" value="a">
+                    <div class="mb-2">
+                        <label class="text-white">
+                            <input type="radio" name="answer-{{ $question->id }}" value="a" class="mr-2">
                             {{ $question->pilihan_a }}
                         </label>
                     </div>
                     @endif
                     @if($question->pilihan_b)
-                    <div>
-                        <label>
-                            <input type="radio" name="answer-{{ $question->id }}" value="b">
+                    <div class="mb-2">
+                        <label class="text-white">
+                            <input type="radio" name="answer-{{ $question->id }}" value="b" class="mr-2">
                             {{ $question->pilihan_b }}
                         </label>
                     </div>
                     @endif
                     @if($question->pilihan_c)
-                    <div>
-                        <label>
-                            <input type="radio" name="answer-{{ $question->id }}" value="c">
+                    <div class="mb-2">
+                        <label class="text-white">
+                            <input type="radio" name="answer-{{ $question->id }}" value="c" class="mr-2">
                             {{ $question->pilihan_c }}
                         </label>
                     </div>
                     @endif
                     @if($question->pilihan_d)
-                    <div>
-                        <label>
-                            <input type="radio" name="answer-{{ $question->id }}" value="d">
+                    <div class="mb-2">
+                        <label class="text-white">
+                            <input type="radio" name="answer-{{ $question->id }}" value="d" class="mr-2">
                             {{ $question->pilihan_d }}
                         </label>
                     </div>
                     @endif
-                    <input type="hidden" id="total-soal" value="{{ count($questions) }}">
-                    <input type="hidden" id="duration-minutes" value="{{ $schedule->duration }}">
+                    <!-- Hidden inputs bisa diletakkan di luar loop soal jika diperlukan -->
                 </form>
                 @endif
             </div>
@@ -76,13 +77,17 @@
         </div>
 
         <!-- Navigasi Soal -->
-        <div id="navigation" class="flex justify-between mt-4 hidden">
-            <button id="prev-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Soal Sebelumnya</button>
-            <button id="daftar-soal-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Daftar Soal</button>
-            <button id="next-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Soal Setelahnya</button>
+        <div id="navigation" class="flex justify-between mt-6 hidden">
+            <button id="prev-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Soal Sebelumnya</button>
+            <button id="daftar-soal-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Daftar Soal</button>
+            <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Soal Setelahnya</button>
         </div>
-        <!-- Konten ujian lainnya (soal, timer, dsb) dapat diletakkan di sini -->
+
+        <!-- Hidden input untuk menyimpan nilai total soal dan durasi -->
+        <input type="hidden" id="total-soal" value="{{ count($questions) }}">
+        <input type="hidden" id="duration-minutes" value="{{ $schedule->duration }}">
     </div>
+
 
     <script>
         // Fungsi untuk meminta fullscreen
@@ -327,8 +332,7 @@
                     Swal.fire({
                         title: autoSubmit ? 'Waktu Habis' : 'Ujian Disubmit',
                         text: autoSubmit ?
-                            'Waktu ujian telah habis. Jawaban anda telah disimpan.' :
-                            'Jawaban anda telah disimpan.',
+                            'Waktu ujian telah habis. Jawaban anda telah disimpan.' : 'Jawaban anda telah disimpan.',
                         icon: 'info'
                     }).then(() => {
                         window.close(); // Tutup jendela ujian setelah submit
