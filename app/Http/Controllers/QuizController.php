@@ -30,7 +30,7 @@ class QuizController extends Controller
         $questions = Question::where('quiz_schedule_id', $schedule->id)
             ->inRandomOrder()
             ->get();
- 
+
         return view('quiz.start', compact('schedule', 'quizSession', 'questions'));
     }
 
@@ -52,16 +52,24 @@ class QuizController extends Controller
     public function finish(Request $request, QuizSchedule $schedule)
     {
         $quizSession = QuizSession::findOrFail($request->quiz_session_id);
-        $quizSession->warning_count = 2;
-        $quizSession->status = 'force_submitted';
+
+        // Jika warning_count masih kurang dari 2, artinya user submit manual
+        if ($quizSession->warning_count < 2) {
+            $quizSession->status = 'submitted';
+        } else {
+            // Jika sudah pelanggaran (warning_count >= 2), tetap force_submitted
+            $quizSession->status = 'force_submitted';
+        }
+
         $quizSession->end_time = now();
         $quizSession->save();
 
         return response()->json([
-            'message' => 'Exam force submitted',
+            'message' => 'Exam submitted',
             'status' => $quizSession->status
         ]);
     }
+
     public function submitAnswer(Request $request, QuizSchedule $schedule)
     {
         // Validasi input minimal
