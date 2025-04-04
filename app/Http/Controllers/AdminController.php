@@ -33,7 +33,8 @@ class AdminController extends Controller
 
     public function listPeserta()
     {
-        $peserta = User::where('role', 'peserta')->get();
+        $peserta = User::where('role', 'peserta')->paginate(15);
+
         return view('admin.list-peserta', compact('peserta'));
     }
 

@@ -17,8 +17,8 @@
                 </thead>
                 <tbody>
                     @foreach($peserta as $index => $user)
-                    <tr class="odd:bg-white even:bg-gray-200 hover:bg-gray-400 transition-colors">
-                        <td class="px-4 py-2 border-b">{{ $index + 1 }}</td>
+                    <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 transition-colors">
+                        <td class="px-4 py-2 border-b">{{ ($peserta->currentPage() - 1) * $peserta->perPage() + $index + 1 }}</td>
                         <td class="px-4 py-2 border-b">{{ $user->username }}</td>
                         <td class="px-4 py-2 border-b">{{ $user->fullname }}</td>
                         <td class="px-4 py-2 border-b">
@@ -32,6 +32,11 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 ">
+            {{ $peserta->links() }}
         </div>
     </div>
 </div>
