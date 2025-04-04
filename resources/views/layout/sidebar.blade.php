@@ -1,6 +1,6 @@
 @php
-    use Illuminate\Support\Facades\Auth;
-    $user = Auth::user(); // Ambil data user yang sedang login
+use Illuminate\Support\Facades\Auth;
+$user = Auth::user(); // Ambil data user yang sedang login
 @endphp
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
@@ -26,24 +26,32 @@
         {{-- Navigation --}}
         <nav class="space-y-2">
             <a href="{{ route(($user && $user->role === 'admin') ? 'admin.dashboard' : 'peserta.dashboard') }}"
-               class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
                 <i class="fas fa-home w-5"></i> Dashboard
             </a>
 
             {{-- Tautan khusus Admin --}}
             @if($user && $user->role === 'admin')
-                <a href=""
-                   class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
-                    <i class="fas fa-user-plus w-5"></i> Add User
-                </a>
+            <a href=""
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
+                <i class="fa-solid fa-eye"></i> Pemantauan Ujian
+            </a>
+            <a href=""
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
+                <i class="fa-solid fa-list"></i> List Peserta
+            </a>
+            <a href="{{ route('admin.peserta.create') }}"
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
+                <i class="fas fa-user-plus w-5"></i> Tambah Peserta
+            </a>
             @endif
 
             {{-- Tautan khusus Peserta --}}
             @if($user && $user->role === 'peserta')
-                <a href="{{ route('peserta.riwayat') }}"
-                   class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
-                    <i class="fas fa-history w-5"></i> Riwayat Ujian
-                </a>
+            <a href="{{ route('peserta.riwayat') }}"
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
+                <i class="fas fa-history w-5"></i> Riwayat Ujian
+            </a>
             @endif
         </nav>
     </div>
@@ -52,7 +60,7 @@
     <form action="{{ route('logout') }}" method="POST" class="mt-10">
         @csrf
         <button type="submit"
-                class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded transition">
+            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded transition">
             <i class="fas fa-sign-out-alt w-5"></i> Logout
         </button>
     </form>

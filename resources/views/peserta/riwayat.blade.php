@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-<div class="container mx-auto py-6">
+<div class="container mx-auto py-6 p-6">
     <h1 class="text-2xl font-bold mb-4 text-white">Riwayat Ujian</h1>
 
     @forelse($sessions as $session)

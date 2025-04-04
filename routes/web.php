@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Route;
@@ -13,9 +14,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(function () {
 
     Route::middleware([IsAdmin::class])->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+        Route::get('/admin/dashboard', function () {return view('admin.dashboard');})->name('admin.dashboard');
+        Route::get('/admin/peserta/create', [AdminController::class, 'createPeserta'])->name('admin.peserta.create');
+        Route::post('/admin/peserta/store', [AdminController::class, 'storePeserta'])->name('admin.peserta.store');
     });
 
 
