@@ -26,9 +26,14 @@ class QuizController extends Controller
             'warning_count'     => 0,
         ]);
 
-        // Render view ujian dan kirim data schedule dan quizSession
-        return view('quiz.start', compact('schedule', 'quizSession'));
+        // Ambil soal untuk schedule ini secara random
+        $questions = Question::where('quiz_schedule_id', $schedule->id)
+            ->inRandomOrder()
+            ->get();
+ 
+        return view('quiz.start', compact('schedule', 'quizSession', 'questions'));
     }
+
 
     // 3. Endpoint untuk meng-update warning_count pertama kali
     public function warning(Request $request, QuizSchedule $schedule)
@@ -56,5 +61,29 @@ class QuizController extends Controller
             'message' => 'Exam force submitted',
             'status' => $quizSession->status
         ]);
+    }
+    public function submitAnswer(Request $request, QuizSchedule $schedule)
+    {
+        // Validasi input minimal
+        $data = $request->validate([
+            'quiz_session_id' => 'required|integer',
+            'question_id'     => 'required|integer',
+            'answer'          => 'required|string',
+        ]);
+
+        // Update atau buat record jawaban
+        $quizAnswer = QuizAnswer::updateOrCreate(
+            [
+                'quiz_session_id' => $data['quiz_session_id'],
+                'question_id'     => $data['question_id'],
+            ],
+            [
+                'answer' => $data['answer'],
+                // Jika perlu, Anda dapat menghitung is_correct di sini
+                'is_correct' => false,
+            ]
+        );
+
+        return response()->json(['message' => 'Jawaban disimpan']);
     }
 }

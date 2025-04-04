@@ -25,5 +25,10 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
         Route::post('/quiz/{schedule}/answer', [QuizController::class, 'submitAnswer'])->name('quiz.answer');
         Route::post('/quiz/{schedule}/warning', [QuizController::class, 'warning'])->name('quiz.warning');
         Route::post('/quiz/{schedule}/finish', [QuizController::class, 'finish'])->name('quiz.finish');
+        Route::get('/test', function() {
+            $questions = \App\Models\Question::take(5)->get();
+            return view('test', compact('questions'));
+        });
+        
     });
 });

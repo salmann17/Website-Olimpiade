@@ -3,6 +3,7 @@
 @section('content')
 
 <head>
+    <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <div class="flex items-center justify-center min-h-screen px-4">
@@ -56,7 +57,7 @@
         @endforeach
     </div>
 </div>
-@endsection
+
 <script>
     function openExamWindow(scheduleId) {
         // Susun URL untuk memulai ujian, misalnya: /quiz/{schedule}
@@ -78,3 +79,4 @@
         }
     }
 </script>
+@endsection
