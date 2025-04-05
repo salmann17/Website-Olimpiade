@@ -133,19 +133,19 @@
         // Fungsi AJAX untuk force finish (warning kedua)
         function forceFinish(answers) {
             return fetch("{{ route('quiz.finish', ['schedule' => $schedule->id]) }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({
-                        quiz_session_id: "{{ $quizSession->id }}",
-                        force: true,
-                        answers: answers
-                    })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    quiz_session_id: "{{ $quizSession->id }}",
+                    force: true, // Flag force finish
+                    answers: answers
                 })
-                .then(response => response.json());
+            }).then(response => response.json());
         }
+
 
         // Debug logging: untuk memastikan event terpicu
         function logEvent(eventName, extra = '') {
@@ -221,7 +221,7 @@
                         text: 'Anda telah melanggar aturan sebanyak 2 kali. Ujian dianggap selesai.',
                         icon: 'info'
                     }).then(() => {
-                        window.location.href = "{{ route('peserta.dashboard') }}";
+                        window.close();
                     });
                 }).catch(err => {
                     console.error("Force finish error: ", err);
@@ -232,6 +232,12 @@
     </script>
 
     <script>
+        // Saat quiz dimulai:
+        if (!localStorage.getItem('quiz_session_id')) {
+            localStorage.setItem('quiz_session_id', "{{ $quizSession->id }}");
+        }
+        // Pada halaman load, cek jika quiz_session_id sudah ada, maka gunakan data tersebut untuk restore state.
+
         const totalSoal = parseInt(document.getElementById('total-soal').value, 10);
         let durationMinutes = parseInt(document.getElementById('duration-minutes').value, 10);
         let currentQuestion = 0;
