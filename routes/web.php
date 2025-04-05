@@ -20,6 +20,7 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
         Route::get('/admin/peserta/list', [AdminController::class, 'listPeserta'])->name('admin.peserta.list');
         Route::post('/admin/peserta/update', [AdminController::class, 'updatePeserta'])->name('admin.peserta.update');
         Route::get('/admin/pantau', [AdminController::class, 'pantauUjian'])->name('admin.pantau.ujian');
+        Route::get('/admin/hasil', [AdminController::class, 'hasilUjian'])->name('admin.hasil.ujian');
     });
 
 

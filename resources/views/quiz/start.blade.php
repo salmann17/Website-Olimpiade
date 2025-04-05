@@ -131,7 +131,7 @@
         }
 
         // Fungsi AJAX untuk force finish (warning kedua)
-        function forceFinish() {
+        function forceFinish(answers) {
             return fetch("{{ route('quiz.finish', ['schedule' => $schedule->id]) }}", {
                     method: 'POST',
                     headers: {
@@ -139,7 +139,9 @@
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     body: JSON.stringify({
-                        quiz_session_id: "{{ $quizSession->id }}"
+                        quiz_session_id: "{{ $quizSession->id }}",
+                        force: true,
+                        answers: answers
                     })
                 })
                 .then(response => response.json());
@@ -202,7 +204,17 @@
                 });
             } else if (warnings >= 2) {
                 examFinished = true;
-                forceFinish().then((data) => {
+                let finalAnswers = [];
+                document.querySelectorAll('.answer-form').forEach(form => {
+                    const questionId = form.getAttribute('data-question-id');
+                    let answerInput = form.querySelector('input[name="answer-' + questionId + '"]:checked');
+                    let answer = answerInput ? answerInput.value : '';
+                    finalAnswers.push({
+                        question_id: questionId,
+                        answer: answer
+                    });
+                });
+                forceFinish(finalAnswers).then((data) => {
                     console.log("Finish response: ", data);
                     Swal.fire({
                         title: 'Ujian Selesai',

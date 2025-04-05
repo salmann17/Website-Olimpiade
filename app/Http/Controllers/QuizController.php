@@ -71,13 +71,17 @@ class QuizController extends Controller
                     );
                 }
             }
-            if ($quizSession->warning_count < 2) {
-                $quizSession->status = 'submitted';
-            } else {
-                $quizSession->status = 'force_submitted';
+        }
+
+        if ($request->input('force') == true) {
+            // Tambahkan +1 ke warning_count existing
+            $quizSession->warning_count += 1;
+            
+            // Jika melebihi 2, clamp ke 2
+            if($quizSession->warning_count > 2) {
+                $quizSession->warning_count = 2;
             }
-        } else {
-            $quizSession->warning_count = 2;
+            
             $quizSession->status = 'force_submitted';
         }
 
@@ -89,8 +93,6 @@ class QuizController extends Controller
             'status'  => $quizSession->status
         ]);
     }
-
-
 
     public function submitAnswer(Request $request, QuizSchedule $schedule)
     {

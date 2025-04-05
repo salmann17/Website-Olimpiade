@@ -32,7 +32,7 @@ $user = Auth::user(); // Ambil data user yang sedang login
 
             {{-- Tautan khusus Admin --}}
             @if($user && $user->role === 'admin')
-            <a href=""
+            <a href="{{ route('admin.hasil.ujian') }}"
                 class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
                 <i class="fa-solid fa-file"></i> Hasil Ujian
             </a>

@@ -82,4 +82,25 @@ class AdminController extends Controller
 
         return view('admin.pantau-ujian', compact('schedules', 'sessions', 'selectedScheduleId'));
     }
+
+    public function hasilUjian(Request $request)
+    {
+        $schedules = QuizSchedule::all();
+        $selectedScheduleId = $request->get('schedule_id');
+
+        $sessions = collect();
+
+        if ($selectedScheduleId) {
+            $sessions = QuizSession::with('user')
+                ->withCount([
+                    'answers as correct_count' => function ($query) {
+                        $query->where('is_correct', true);
+                    }
+                ])
+                ->where('quiz_schedule_id', $selectedScheduleId)
+                ->paginate(15);
+        }
+
+        return view('admin.hasil-ujian', compact('schedules', 'sessions', 'selectedScheduleId'));
+    }
 }
