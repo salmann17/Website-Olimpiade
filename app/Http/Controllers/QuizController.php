@@ -42,18 +42,17 @@ class QuizController extends Controller
             'warning_count' => $quizSession->warning_count
         ]);
     }
+
     public function finish(Request $request, QuizSchedule $schedule)
     {
         $quizSession = QuizSession::findOrFail($request->quiz_session_id);
-    
-        // Jika request menyertakan array 'answers', artinya ini manual submit
+
         if ($request->has('answers') && is_array($request->input('answers'))) {
             foreach ($request->input('answers') as $data) {
                 if (isset($data['question_id']) && isset($data['answer'])) {
                     $question = Question::find($data['question_id']);
                     $isCorrect = 0;
                     if ($question) {
-                        // Normalisasi jawaban untuk perbandingan case-insensitive
                         $correctNormalized = strtolower($question->correct_answer);
                         $answerNormalized  = strtolower($data['answer']);
                         if ($correctNormalized === $answerNormalized) {
@@ -72,29 +71,26 @@ class QuizController extends Controller
                     );
                 }
             }
-            // Jika manual submit dan warning_count kurang dari 2, status jadi submitted
             if ($quizSession->warning_count < 2) {
                 $quizSession->status = 'submitted';
             } else {
-                // Jika ada pelanggaran sebelumnya, status tetap force_submitted
                 $quizSession->status = 'force_submitted';
             }
         } else {
-            // Jika tidak ada 'answers' di request, artinya ini force finish
-            // Update warning_count ke 2 dan status force_submitted
             $quizSession->warning_count = 2;
             $quizSession->status = 'force_submitted';
         }
-    
+
         $quizSession->end_time = now();
         $quizSession->save();
-    
+
         return response()->json([
             'message' => 'Exam submitted',
             'status'  => $quizSession->status
         ]);
     }
-    
+
+
 
     public function submitAnswer(Request $request, QuizSchedule $schedule)
     {

@@ -49,9 +49,9 @@
                     $rowNumber = ($sessions->currentPage() - 1) * $sessions->perPage() + $index + 1;
                     @endphp
                     <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 transition-colors">
-                        <td class="px-4 py-2 border-b">{{ $rowNumber }}</td>
-                        <td class="px-4 py-2 border-b">{{ $session->user->username }}</td>
-                        <td class="px-4 py-2 border-b {{ $deteksiBg }} text-center font-semibold">
+                        <td class="px-4 py-2 border-b text-left">{{ $rowNumber }}</td>
+                        <td class="px-4 py-2 border-b text-left">{{ $session->user->username }}</td>
+                        <td class="px-4 py-2 border-b {{ $deteksiBg }} text-left font-semibold">
                             {{ $deteksiText }}
                         </td>
                         <td class="px-4 py-2 border-b">{{ $session->status }}</td>
