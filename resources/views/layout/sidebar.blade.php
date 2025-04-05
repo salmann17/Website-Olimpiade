@@ -34,6 +34,10 @@ $user = Auth::user(); // Ambil data user yang sedang login
             @if($user && $user->role === 'admin')
             <a href=""
                 class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
+                <i class="fa-solid fa-file"></i> Hasil Ujian
+            </a>
+            <a href="{{ route('admin.pantau.ujian') }}"
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-white/20 transition">
                 <i class="fa-solid fa-eye"></i> Pemantauan Ujian
             </a>
             <a href="{{ route('admin.peserta.list') }}"

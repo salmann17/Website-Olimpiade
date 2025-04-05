@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QuizSchedule;
+use App\Models\QuizSession;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -62,5 +64,22 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Data peserta berhasil diperbarui.',
         ]);
+    }
+
+    public function pantauUjian(Request $request)
+    {
+        $schedules = QuizSchedule::all();
+
+        $selectedScheduleId = $request->get('schedule_id');
+
+        $sessions = collect(); 
+
+        if ($selectedScheduleId) {
+            $sessions = QuizSession::with('user')
+                ->where('quiz_schedule_id', $selectedScheduleId)
+                ->paginate(15);
+        }
+
+        return view('admin.pantau-ujian', compact('schedules', 'sessions', 'selectedScheduleId'));
     }
 }
