@@ -69,38 +69,48 @@ class AdminController extends Controller
     public function pantauUjian(Request $request)
     {
         $schedules = QuizSchedule::all();
-
         $selectedScheduleId = $request->get('schedule_id');
 
-        $sessions = collect(); 
+        $users = User::where('role', 'peserta')->get();
 
+        $sessions = collect();
         if ($selectedScheduleId) {
-            $sessions = QuizSession::with('user')
-                ->where('quiz_schedule_id', $selectedScheduleId)
-                ->paginate(15);
+            $sessions = QuizSession::where('quiz_schedule_id', $selectedScheduleId)
+                ->get()
+                ->keyBy('user_id');
+
+            $users = $users->sortByDesc(function ($user) use ($sessions) {
+                return $sessions->has($user->id) ? 1 : 0;
+            })->values();
         }
 
-        return view('admin.pantau-ujian', compact('schedules', 'sessions', 'selectedScheduleId'));
+        return view('admin.pantau-ujian', compact(
+            'schedules',
+            'selectedScheduleId',
+            'users',
+            'sessions'
+        ));
     }
 
     public function hasilUjian(Request $request)
     {
         $schedules = QuizSchedule::all();
         $selectedScheduleId = $request->get('schedule_id');
-
+    
+        $users = User::where('role', 'peserta')->get();
         $sessions = collect();
-
+    
         if ($selectedScheduleId) {
-            $sessions = QuizSession::with('user')
-                ->withCount([
-                    'answers as correct_count' => function ($query) {
-                        $query->where('is_correct', true);
-                    }
+            $sessions = QuizSession::withCount([
+                    'answers as correct_count' => fn($q) => $q->where('is_correct', true)
                 ])
                 ->where('quiz_schedule_id', $selectedScheduleId)
-                ->paginate(15);
+                ->get()
+                ->keyBy('user_id');
+    
+            $users = $users->sortByDesc(fn($u) => $sessions->has($u->id) ? 1 : 0)->values();
         }
-
-        return view('admin.hasil-ujian', compact('schedules', 'sessions', 'selectedScheduleId'));
-    }
+    
+        return view('admin.hasil-ujian', compact('schedules','selectedScheduleId','users','sessions'));
+    }    
 }
