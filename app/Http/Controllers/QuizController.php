@@ -115,4 +115,13 @@ class QuizController extends Controller
 
         return response()->json(['message' => 'Jawaban disimpan']);
     }
+
+    public function checkSession(Request $request)
+    {
+        $exists = QuizSession::where('user_id', $request->user_id)
+            ->where('quiz_schedule_id', $request->schedule_id)
+            ->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
 }

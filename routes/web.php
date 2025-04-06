@@ -31,7 +31,7 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
         Route::post('/quiz/{schedule}/answer', [QuizController::class, 'submitAnswer'])->name('quiz.answer');
         Route::post('/quiz/{schedule}/warning', [QuizController::class, 'warning'])->name('quiz.warning');
         Route::post('/quiz/{schedule}/finish', [QuizController::class, 'finish'])->name('quiz.finish');
-
+        Route::post('/quiz/check', [QuizController::class, 'checkSession'])->name('quiz.check');
         
     });
 });
