@@ -33,12 +33,19 @@ class AdminController extends Controller
         return redirect()->route('admin.peserta.create')->with('success', 'Peserta berhasil ditambahkan.');
     }
 
-    public function listPeserta()
+    public function listPeserta(Request $request)
     {
-        $peserta = User::where('role', 'peserta')->paginate(15);
+        $search = $request->get('search');
 
-        return view('admin.list-peserta', compact('peserta'));
+        $pesertaQuery = User::where('role', 'peserta')
+            ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"));
+
+        $peserta = $pesertaQuery->paginate(15)
+            ->appends(['search' => $search]);
+
+        return view('admin.list-peserta', compact('peserta', 'search'));
     }
+
 
     public function updatePeserta(Request $request)
     {

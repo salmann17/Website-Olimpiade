@@ -21,6 +21,16 @@
             </div>
 
             <div>
+                <label for="fullname" class="block mb-1">Fullname</label>
+                <input type="text" name="fullname" id="fullname" required
+                    class="w-full p-2 rounded-lg bg-white text-gray-800 focus:outline-none @error('fullname') border-2 border-red-500 @enderror"
+                    value="{{ old('fullname') }}">
+                @error('fullname')
+                <p class="text-red-200 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
                 <label for="password" class="block mb-1">Password</label>
                 <input type="password" name="password" id="password" required
                     class="w-full p-2 rounded-lg bg-white text-gray-800 focus:outline-none @error('password') border-2 border-red-500 @enderror">
@@ -33,16 +43,6 @@
                 <label for="password_confirmation" class="block mb-1">Cek Password</label>
                 <input type="password" name="password_confirmation" id="password_confirmation" required
                     class="w-full p-2 rounded-lg bg-white text-gray-800 focus:outline-none">
-            </div>
-
-            <div>
-                <label for="fullname" class="block mb-1">Nama Lengkap</label>
-                <input type="text" name="fullname" id="fullname" required
-                    class="w-full p-2 rounded-lg bg-white text-gray-800 focus:outline-none @error('fullname') border-2 border-red-500 @enderror"
-                    value="{{ old('fullname') }}">
-                @error('fullname')
-                <p class="text-red-200 text-xs mt-1">{{ $message }}</p>
-                @enderror
             </div>
 
             <button type="submit" class="w-full py-2 bg-gray-600 text-white hover:text-[#5f27cd] font-semibold rounded-lg hover:bg-white transition">

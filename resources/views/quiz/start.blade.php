@@ -152,19 +152,24 @@
             console.log(eventName + " fired. " + extra);
         }
 
+        let wasHidden = false;
+
+
         // Event: document visibility berubah (misalnya, tab berubah atau minimize)
         document.addEventListener("visibilitychange", function() {
-            logEvent("visibilitychange", "State: " + document.visibilityState);
             if (document.visibilityState === "hidden") {
-                handleWarningEvent("Anda berpindah tab atau meminimalkan jendela!");
+                wasHidden = true;
+            } else if (document.visibilityState === "visible" && wasHidden) {
+                wasHidden = false;
+                // Panggil peringatan sekali
+                handleWarningEvent("Anda berpindah tab atau aplikasi!");
             }
         });
-
         // Event: jendela kehilangan fokus
-        window.addEventListener("blur", function() {
-            logEvent("window blur");
-            handleWarningEvent("Jendela kehilangan fokus!");
-        });
+        // window.addEventListener("blur", function() {
+        //     logEvent("window blur");
+        //     handleWarningEvent("Jendela kehilangan fokus!");
+        // });
 
         // Event: perubahan fullscreen (misalnya, user menekan ESC)
         document.addEventListener('fullscreenchange', function() {

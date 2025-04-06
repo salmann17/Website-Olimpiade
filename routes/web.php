@@ -27,7 +27,7 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
     Route::middleware([IsPeserta::class])->group(function () {
         Route::get('/peserta/dashboard', [\App\Http\Controllers\UsersController::class, 'dashboardPeserta'])->name('peserta.dashboard');
         Route::get('/peserta/riwayat', [\App\Http\Controllers\UsersController::class, 'riwayatUjian'])->name('peserta.riwayat');
-        Route::get('/quiz/{schedule}', [QuizController::class, 'start'])->name('quiz.start');
+        Route::post('/quiz/{schedule}', [QuizController::class, 'start'])->name('quiz.start');
         Route::post('/quiz/{schedule}/answer', [QuizController::class, 'submitAnswer'])->name('quiz.answer');
         Route::post('/quiz/{schedule}/warning', [QuizController::class, 'warning'])->name('quiz.warning');
         Route::post('/quiz/{schedule}/finish', [QuizController::class, 'finish'])->name('quiz.finish');
