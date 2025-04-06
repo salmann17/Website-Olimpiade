@@ -14,7 +14,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(function () {
 
     Route::middleware([IsAdmin::class])->group(function () {
-        Route::get('/admin/dashboard', function () {return view('admin.dashboard');})->name('admin.dashboard');
+        // Route::get('/admin/dashboard', function () {return view('admin.dashboard');})->name('admin.dashboard');
+        Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/admin/peserta/create', [AdminController::class, 'createPeserta'])->name('admin.peserta.create');
         Route::post('/admin/peserta/store', [AdminController::class, 'storePeserta'])->name('admin.peserta.store');
         Route::get('/admin/peserta/list', [AdminController::class, 'listPeserta'])->name('admin.peserta.list');
@@ -32,6 +33,7 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
         Route::post('/quiz/{schedule}/warning', [QuizController::class, 'warning'])->name('quiz.warning');
         Route::post('/quiz/{schedule}/finish', [QuizController::class, 'finish'])->name('quiz.finish');
         Route::post('/quiz/check', [QuizController::class, 'checkSession'])->name('quiz.check');
-        
+        Route::get('/quiz/{schedule}', [QuizController::class, 'show'])->name('quiz.show');
+
     });
 });

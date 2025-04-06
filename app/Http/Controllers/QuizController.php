@@ -12,6 +12,26 @@ use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
+    public function show(QuizSchedule $schedule)
+    {
+        $user = Auth::user();
+
+        $quizSession = QuizSession::firstOrCreate([
+            'user_id' => $user->id,
+            'quiz_schedule_id' => $schedule->id
+        ], [
+            'start_time' => now(),
+            'status' => 'in_progress',
+            'warning_count' => 0,
+        ]);
+
+        $questions = Question::where('quiz_schedule_id', $schedule->id)
+            ->inRandomOrder()
+            ->get();
+
+        return view('quiz.start', compact('schedule', 'quizSession', 'questions'));
+    }
+
     public function start(Request $request, QuizSchedule $schedule)
     {
         $user = Auth::user();
@@ -30,6 +50,7 @@ class QuizController extends Controller
 
         return view('quiz.start', compact('schedule', 'quizSession', 'questions'));
     }
+
 
     public function warning(Request $request, QuizSchedule $schedule)
     {
@@ -124,4 +145,5 @@ class QuizController extends Controller
 
         return response()->json(['exists' => $exists]);
     }
+
 }

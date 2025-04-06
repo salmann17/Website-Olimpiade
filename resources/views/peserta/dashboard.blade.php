@@ -28,7 +28,7 @@
             </div>
             @elseif ($schedule->status === 'available')
             <div class="bg-blue-600 hover:bg-blue-700 text-white text-center py-2">
-                <a href="javascript:void(0)" onclick="checkSession({{ $schedule->id }})" class="inline-flex items-center gap-2 justify-center">
+                <a href="javascript:void(0)" onclick="openExamWindow({{ $schedule->id }})" class="inline-flex items-center gap-2 justify-center">
                     <i class="fas fa-play"></i> Mulai
                 </a>
             </div>
@@ -46,45 +46,23 @@
     </div>
 </div>
 <input type="hidden" id="user-id" value="{{ Auth::id() }}">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    function checkSession(scheduleId) {
-        const userId = document.getElementById('user-id').value;
-
-        fetch("{{ route('quiz.check') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    schedule_id: scheduleId,
-                    user_id: userId 
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.exists) {
-                    Swal.fire('Info', 'Anda sudah mengerjakan ujian ini.', 'info');
-                } else {
-                    openExamWindow(scheduleId);
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Gagal memeriksa sesi ujian.', 'error');
-            });
-    }
-
     function openExamWindow(scheduleId) {
-        const url = "{{ url('/quiz') }}/" + scheduleId;
-        const features = "toolbar=no,location=no,status=no,menubar=no," +
+        const url = "{{ route('quiz.show', ':id') }}".replace(':id', scheduleId);
+
+        const features = "toolbar=no,location=no,directories=no,status=no,menubar=no," +
             "scrollbars=yes,resizable=yes," +
-            "width=" + screen.width + ",height=" + screen.height;
-        const win = window.open(url, "_blank", features);
-        if (win) win.focus();
-        else alert("Popup terblokir!");
+            "width=" + screen.width + ",height=" + screen.height + "," +
+            "left=0,top=0";
+
+        const examWindow = window.open(url, "_blank", features);
+
+        if (examWindow) {
+            examWindow.focus();
+        } else {
+            alert("Popup terblokir! Mohon izinkan popup untuk situs ini.");
+        }
     }
 </script>
-
 @endsection

@@ -113,20 +113,17 @@ class AdminController extends Controller
         $selectedScheduleId = $request->get('schedule_id', 0);
         $search = $request->get('search');
 
-        // Subquery untuk menandai user yang punya session di schedule terpilih
         $subSql = 'exists (
             select 1 from quiz_sessions 
             where quiz_sessions.user_id = users.id 
             and quiz_sessions.quiz_schedule_id = ?
         )';
 
-        // Query user peserta dengan search, urutkan yang sudah ikut ujian dulu
         $userQuery = User::where('role', 'peserta')
             ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"))
             ->orderByRaw("$subSql desc", [$selectedScheduleId])
             ->orderBy('username');
 
-        // Ambil sessions dengan count jawaban benar, keyed by user_id
         $sessions = collect();
         if ($selectedScheduleId) {
             $sessions = QuizSession::withCount([
@@ -137,7 +134,6 @@ class AdminController extends Controller
                 ->keyBy('user_id');
         }
 
-        // Paginate 15
         $users = $userQuery->paginate(15)->appends([
             'schedule_id' => $selectedScheduleId,
             'search'      => $search,
@@ -150,5 +146,51 @@ class AdminController extends Controller
             'users',
             'sessions'
         ));
+    }
+
+    public function dashboard()
+    {
+        $stages = ['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal'];
+        $warningData = [];
+
+        foreach ($stages as $stage) {
+            $schedule = QuizSchedule::where('title', $stage)->first();
+
+            $warningCounts = QuizSession::where('quiz_schedule_id', $schedule->id)
+                ->selectRaw('warning_count, COUNT(*) as total')
+                ->groupBy('warning_count')
+                ->pluck('total', 'warning_count')
+                ->toArray();
+
+            $warningData[] = [
+                $warningCounts[0] ?? 0,
+                $warningCounts[1] ?? 0,
+                $warningCounts[2] ?? 0
+            ];
+        }
+
+        $scoreData = [];
+
+        foreach ($stages as $stage) {
+            $schedule = QuizSchedule::where('title', $stage)->first();
+
+            $scores = QuizSession::where('quiz_schedule_id', $schedule->id)
+                ->selectRaw('FLOOR(skor/10)*10 as range_start, COUNT(*) as count')
+                ->groupBy('range_start')
+                ->orderBy('range_start')
+                ->get()
+                ->pluck('count', 'range_start')
+                ->toArray();
+
+            $scoreDistribution = array_fill(0, 10, 0);
+            foreach ($scores as $range => $count) {
+                $index = $range / 10;
+                $scoreDistribution[$index] = $count;
+            }
+
+            $scoreData[] = $scoreDistribution;
+        }
+
+        return view('admin.dashboard', compact('warningData', 'scoreData'));
     }
 }
