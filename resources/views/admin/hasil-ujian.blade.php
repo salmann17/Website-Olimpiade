@@ -5,9 +5,9 @@
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Hasil Ujian</h2>
 
-        <form action="{{ route('admin.hasil.ujian') }}" method="GET" class="mb-6 flex items-center gap-2">
-            <label>Pilih Babak:</label>
-            <select name="schedule_id" class="px-3 py-2 border rounded">
+        <form id="filter-form" action="{{ route('admin.hasil.ujian') }}" method="GET" class="mb-4 flex gap-2">
+            <select name="schedule_id" class="px-3 py-2 border rounded"
+                onchange="document.getElementById('filter-form').submit()">
                 <option value="">-- Pilih Babak --</option>
                 @foreach($schedules as $sch)
                 <option value="{{ $sch->id }}" {{ $selectedScheduleId==$sch->id?'selected':'' }}>
@@ -15,12 +15,15 @@
                 </option>
                 @endforeach
             </select>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded">Tampilkan</button>
+            <input type="text" name="search" placeholder="Cari username..." value="{{ $search }}"
+                class="px-3 py-2 border rounded flex-1"
+                onkeydown="if(event.key==='Enter') document.getElementById('filter-form').submit()">
+            <button class="px-4 py-2 bg-blue-600 text-white rounded">Cari</button>
         </form>
 
         @if($selectedScheduleId)
         <div class="overflow-x-auto">
-            <table class="min-w-full border-separate" style="border-spacing: 0;">
+            <table class="min-w-full border-separate" style="border-spacing:0">
                 <thead class="bg-gradient-to-br from-[#48dbfb] to-[#5f27cd]">
                     <tr>
                         <th class="px-4 py-2 text-white">No</th>
@@ -34,22 +37,18 @@
                     @foreach($users as $i => $user)
                     @php
                     $session = $sessions->get($user->id);
-                    $rowNumber = $i + 1;
+                    $rowNumber = ($users->currentPage()-1)*$users->perPage()+$i+1;
                     @endphp
                     <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200">
                         <td class="px-4 py-2 border text-center">{{ $rowNumber }}</td>
                         <td class="px-4 py-2 border text-center">{{ $user->username }}</td>
-
                         @if($session)
                         @php
                         // Durasi
                         $sec = abs($session->end_time->diffInSeconds($session->start_time));
                         $h = floor($sec/3600); $m = floor(($sec%3600)/60); $s = $sec%60;
-                        $parts = [];
-                        if($h) $parts[] = "$h jam";
-                        if($m) $parts[] = "$m menit";
-                        $parts[] = "$s detik";
-                        $dur = implode(' ', $parts);
+                        $parts=[]; if($h) $parts[]="$h jam"; if($m) $parts[]="$m menit"; $parts[]="$s detik";
+                        $dur = implode(' ',$parts);
                         // Waktu jam saja
                         $time = $session->start_time->format('H:i:s').' - '.$session->end_time->format('H:i:s');
                         // Skor
@@ -68,8 +67,11 @@
                 </tbody>
             </table>
         </div>
-        @endif
 
+        <div class="mt-4">
+            {{ $users->links('vendor.pagination.tailwind') }}
+        </div>
+        @endif
     </div>
 </div>
 @endsection

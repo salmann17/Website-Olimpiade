@@ -69,48 +69,79 @@ class AdminController extends Controller
     public function pantauUjian(Request $request)
     {
         $schedules = QuizSchedule::all();
-        $selectedScheduleId = $request->get('schedule_id');
+        $selectedScheduleId = $request->get('schedule_id', 0);
+        $search = $request->get('search');
 
-        $users = User::where('role', 'peserta')->get();
+        $subSql = 'exists (select 1 from quiz_sessions where quiz_sessions.user_id = users.id and quiz_sessions.quiz_schedule_id = ?)';
+
+        $userQuery = User::where('role', 'peserta')
+            ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"))
+            ->orderByRaw("$subSql desc", [$selectedScheduleId])
+            ->orderBy('username');
+
+        $users = $userQuery->paginate(15)->appends([
+            'schedule_id' => $selectedScheduleId,
+            'search'      => $search,
+        ]);
 
         $sessions = collect();
         if ($selectedScheduleId) {
             $sessions = QuizSession::where('quiz_schedule_id', $selectedScheduleId)
                 ->get()
                 ->keyBy('user_id');
-
-            $users = $users->sortByDesc(function ($user) use ($sessions) {
-                return $sessions->has($user->id) ? 1 : 0;
-            })->values();
         }
 
         return view('admin.pantau-ujian', compact(
             'schedules',
             'selectedScheduleId',
             'users',
-            'sessions'
+            'sessions',
+            'search'
         ));
     }
 
     public function hasilUjian(Request $request)
     {
         $schedules = QuizSchedule::all();
-        $selectedScheduleId = $request->get('schedule_id');
-    
-        $users = User::where('role', 'peserta')->get();
+        $selectedScheduleId = $request->get('schedule_id', 0);
+        $search = $request->get('search');
+
+        // Subquery untuk menandai user yang punya session di schedule terpilih
+        $subSql = 'exists (
+            select 1 from quiz_sessions 
+            where quiz_sessions.user_id = users.id 
+            and quiz_sessions.quiz_schedule_id = ?
+        )';
+
+        // Query user peserta dengan search, urutkan yang sudah ikut ujian dulu
+        $userQuery = User::where('role', 'peserta')
+            ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"))
+            ->orderByRaw("$subSql desc", [$selectedScheduleId])
+            ->orderBy('username');
+
+        // Ambil sessions dengan count jawaban benar, keyed by user_id
         $sessions = collect();
-    
         if ($selectedScheduleId) {
             $sessions = QuizSession::withCount([
-                    'answers as correct_count' => fn($q) => $q->where('is_correct', true)
-                ])
+                'answers as correct_count' => fn($q) => $q->where('is_correct', true)
+            ])
                 ->where('quiz_schedule_id', $selectedScheduleId)
                 ->get()
                 ->keyBy('user_id');
-    
-            $users = $users->sortByDesc(fn($u) => $sessions->has($u->id) ? 1 : 0)->values();
         }
-    
-        return view('admin.hasil-ujian', compact('schedules','selectedScheduleId','users','sessions'));
-    }    
+
+        // Paginate 15
+        $users = $userQuery->paginate(15)->appends([
+            'schedule_id' => $selectedScheduleId,
+            'search'      => $search,
+        ]);
+
+        return view('admin.hasil-ujian', compact(
+            'schedules',
+            'selectedScheduleId',
+            'search',
+            'users',
+            'sessions'
+        ));
+    }
 }

@@ -5,22 +5,23 @@
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Pemantauan Ujian</h2>
 
-        <form action="{{ route('admin.pantau.ujian') }}" method="GET" class="mb-6 flex items-center gap-2">
-            <label>Pilih Babak:</label>
-            <select name="schedule_id" class="px-3 py-2 border rounded">
+        <form id="filter-form" action="{{ route('admin.pantau.ujian') }}" method="GET" class="mb-4 flex gap-2">
+            <select name="schedule_id" class="px-3 py-2 border rounded" onchange="document.getElementById('filter-form').submit()">
                 <option value="">-- Pilih Babak --</option>
                 @foreach($schedules as $sch)
-                <option value="{{ $sch->id }}" {{ $selectedScheduleId == $sch->id ? 'selected' : '' }}>
+                <option value="{{ $sch->id }}" {{ $selectedScheduleId==$sch->id?'selected':'' }}>
                     {{ $sch->title }}
                 </option>
                 @endforeach
             </select>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded">Tampilkan</button>
+            <input type="text" name="search" placeholder="Cari username..." value="{{ $search }}"
+                class="px-3 py-2 border rounded flex-1" onkeydown="if(event.key==='Enter') document.getElementById('filter-form').submit()">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Cari</button>
         </form>
 
         @if($selectedScheduleId)
         <div class="overflow-x-auto">
-            <table class="min-w-full border-separate" style="border-spacing: 0;">
+            <table class="min-w-full border-separate" style="border-spacing:0">
                 <thead class="bg-gradient-to-br from-[#48dbfb] to-[#5f27cd]">
                     <tr>
                         <th class="px-4 py-2 text-white">No</th>
@@ -30,25 +31,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($users as $index => $user)
+                    @foreach($users as $i => $user)
                     @php
                     $session = $sessions->get($user->id);
-                    $rowNumber = $index + 1;
+                    $rowNumber = ($users->currentPage()-1)*$users->perPage()+$i+1;
                     @endphp
                     <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200">
                         <td class="px-4 py-2 border text-center">{{ $rowNumber }}</td>
                         <td class="px-4 py-2 border text-center">{{ $user->username }}</td>
                         @if($session)
                         @php
-                        if ($session->warning_count == 0) {
-                        $deteksiText = 'Aman'; $deteksiBg = 'bg-green-200';
-                        } elseif ($session->warning_count == 1) {
-                        $deteksiText = 'Peringatan'; $deteksiBg = 'bg-yellow-200';
-                        } else {
-                        $deteksiText = 'Diskualifikasi'; $deteksiBg = 'bg-red-200';
-                        }
+                        if ($session->warning_count==0) { $txt='Aman'; $bg='bg-green-200'; }
+                        elseif($session->warning_count==1){ $txt='Peringatan'; $bg='bg-yellow-200'; }
+                        else{ $txt='Diskualifikasi'; $bg='bg-red-200'; }
                         @endphp
-                        <td class="px-4 py-2 border {{ $deteksiBg }} text-center">{{ $deteksiText }}</td>
+                        <td class="px-4 py-2 border {{ $bg }} text-center">{{ $txt }}</td>
                         <td class="px-4 py-2 border text-center">{{ $session->status }}</td>
                         @else
                         <td class="px-4 py-2 border text-center">–</td>
@@ -58,6 +55,10 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-4">
+            {{ $users->links('vendor.pagination.tailwind') }}
         </div>
         @endif
     </div>
