@@ -199,7 +199,8 @@
                         title: 'Peringatan',
                         text: message + ' Jika Anda melakukannya sekali lagi, ujian akan dianggap selesai.',
                         icon: 'warning',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#3085d6'
                     }).then(() => {
                         // Coba kembali minta fullscreen jika user belum di mode fullscreen
                         if (!document.fullscreenElement) {
@@ -224,7 +225,8 @@
                     Swal.fire({
                         title: 'Ujian Selesai',
                         text: 'Anda telah melanggar aturan sebanyak 2 kali. Ujian dianggap selesai.',
-                        icon: 'info'
+                        icon: 'info',
+                        confirmButtonColor: '#3085d6'
                     }).then(() => {
                         localStorage.removeItem('examState');
                         window.close();
@@ -331,6 +333,7 @@
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, submit',
+                    confirmButtonColor: '#3085d6', 
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {

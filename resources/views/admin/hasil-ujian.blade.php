@@ -56,12 +56,10 @@
                         $dur = implode(' ', $parts);
                         // Waktu (format jam)
                         $time = $session->start_time->format('H:i:s') . ' - ' . $session->end_time->format('H:i:s');
-                        // Skor
-                        $score = ($session->correct_count ?? 0) * 10;
                         @endphp
                         <td class="px-4 py-2 border text-center">{{ $dur }}</td>
                         <td class="px-4 py-2 border text-center">{{ $time }}</td>
-                        <td class="px-4 py-2 border text-center">{{ $score }}</td>
+                        <td class="px-4 py-2 border text-center">{{ $session->skor }}</td>
                         @else
                         <td class="px-4 py-2 border text-center">–</td>
                         <td class="px-4 py-2 border text-center">–</td>

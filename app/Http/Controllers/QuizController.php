@@ -106,6 +106,14 @@ class QuizController extends Controller
         }
 
         $quizSession->end_time = now();
+
+        if (in_array($schedule->id, [1, 2])) {
+            $correctCount = QuizAnswer::where('quiz_session_id', $quizSession->id)
+                ->where('is_correct', true)
+                ->count();
+            $quizSession->skor = $correctCount * 10;
+        }
+        
         $quizSession->save();
 
         return response()->json([

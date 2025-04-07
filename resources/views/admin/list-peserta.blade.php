@@ -74,6 +74,8 @@
             showCancelButton: true,
             confirmButtonText: 'Simpan',
             cancelButtonText: 'Batal',
+            confirmButtonColor: '#3085d6', 
+            cancelButtonColor: '#d33', 
             focusConfirm: false,
             preConfirm: () => {
                 const swalUsername = document.getElementById('swal-username').value;
@@ -113,6 +115,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
+                                confirmButtonColor: '#3085d6', 
                                 text: res.message
                             }).then(() => {
                                 window.location.reload();

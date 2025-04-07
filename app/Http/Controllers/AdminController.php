@@ -122,25 +122,13 @@ class AdminController extends Controller
                 $join->on('users.id', '=', 'quiz_sessions.user_id')
                     ->where('quiz_sessions.quiz_schedule_id', $selectedScheduleId);
             })
-                ->leftJoin(DB::raw("(SELECT quiz_sessions.id AS session_id,
-                                    quiz_sessions.user_id,
-                                    COUNT(*) AS correct_count
-                             FROM quiz_answers
-                             JOIN quiz_sessions 
-                                ON quiz_answers.quiz_session_id = quiz_sessions.id
-                             WHERE quiz_answers.is_correct = 1
-                             GROUP BY quiz_sessions.id, quiz_sessions.user_id
-                            ) AS sub"), 'sub.session_id', '=', 'quiz_sessions.id')
-
                 ->select(
                     'users.*',
-                    DB::raw("sub.correct_count"),
-                    DB::raw("TIMESTAMPDIFF(SECOND, quiz_sessions.start_time, quiz_sessions.end_time) as duration")
+                    DB::raw("TIMESTAMPDIFF(SECOND, quiz_sessions.start_time, quiz_sessions.end_time) as duration"),
+                    'quiz_sessions.skor'
                 )
-
-                ->orderByRaw("IFNULL(sub.correct_count, 0) DESC")
-
-                ->orderByRaw("IFNULL(duration, 9999999) ASC");
+                ->orderBy('quiz_sessions.skor', 'desc')
+                ->orderByRaw("IFNULL(TIMESTAMPDIFF(SECOND, quiz_sessions.start_time, quiz_sessions.end_time), 9999999) ASC");
         } else {
             $userQuery->orderBy('username');
         }
@@ -152,10 +140,7 @@ class AdminController extends Controller
 
         $sessions = collect();
         if ($selectedScheduleId) {
-            $sessions = QuizSession::withCount([
-                'answers as correct_count' => fn($q) => $q->where('is_correct', true)
-            ])
-                ->where('quiz_schedule_id', $selectedScheduleId)
+            $sessions = QuizSession::where('quiz_schedule_id', $selectedScheduleId)
                 ->get()
                 ->keyBy('user_id');
         }
@@ -168,8 +153,6 @@ class AdminController extends Controller
             'sessions'
         ));
     }
-
-
 
 
     public function dashboard()

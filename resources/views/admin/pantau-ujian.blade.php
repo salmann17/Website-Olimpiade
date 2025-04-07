@@ -36,16 +36,26 @@
                     $session = $sessions->get($user->id);
                     $rowNumber = ($users->currentPage()-1)*$users->perPage()+$i+1;
                     @endphp
-                    <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200">
+                    <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 group">
                         <td class="px-4 py-2 border text-center">{{ $rowNumber }}</td>
                         <td class="px-4 py-2 border text-center">{{ $user->username }}</td>
                         @if($session)
                         @php
-                        if ($session->warning_count==0) { $txt='Aman'; $bg='bg-green-200'; }
-                        elseif($session->warning_count==1){ $txt='Peringatan'; $bg='bg-yellow-200'; }
-                        else{ $txt='Diskualifikasi'; $bg='bg-red-200'; }
+                        if ($session->warning_count == 0) {
+                        $txt = 'Aman';
+                        $bg = 'bg-green-300';
+                        $groupHover = 'group-hover:bg-green-100';
+                        } elseif ($session->warning_count == 1) {
+                        $txt = 'Peringatan';
+                        $bg = 'bg-yellow-300';
+                        $groupHover = 'group-hover:bg-yellow-100';
+                        } else {
+                        $txt = 'Diskualifikasi';
+                        $bg = 'bg-red-300';
+                        $groupHover = 'group-hover:bg-red-100';
+                        }
                         @endphp
-                        <td class="px-4 py-2 border {{ $bg }} text-center">{{ $txt }}</td>
+                        <td class="px-4 py-2 border {{ $bg }} {{ $groupHover }} text-center">{{ $txt }}</td>
                         <td class="px-4 py-2 border text-center">{{ $session->status }}</td>
                         @else
                         <td class="px-4 py-2 border text-center">–</td>

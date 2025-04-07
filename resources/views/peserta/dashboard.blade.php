@@ -64,7 +64,17 @@
             .then(res => res.json())
             .then(data => {
                 if (data.exists) {
-                    Swal.fire('Info', 'Anda sudah mengerjakan ujian ini.', 'info');
+                    Swal.fire({
+                        title: 'Info',
+                        text: 'Anda sudah mengerjakan ujian ini.',
+                        icon: 'info',
+                        confirmButtonText: 'Oke',
+                        confirmButtonColor: '#3085d6',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
                 } else {
                     openExamWindow(scheduleId);
                 }
