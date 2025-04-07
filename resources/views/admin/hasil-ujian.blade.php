@@ -42,17 +42,22 @@
                     <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200">
                         <td class="px-4 py-2 border text-center">{{ $rowNumber }}</td>
                         <td class="px-4 py-2 border text-center">{{ $user->username }}</td>
-                        @if($session)
+                        @if($session && $session->start_time && $session->end_time)
                         @php
                         // Durasi
                         $sec = abs($session->end_time->diffInSeconds($session->start_time));
-                        $h = floor($sec/3600); $m = floor(($sec%3600)/60); $s = $sec%60;
-                        $parts=[]; if($h) $parts[]="$h jam"; if($m) $parts[]="$m menit"; $parts[]="$s detik";
-                        $dur = implode(' ',$parts);
-                        // Waktu jam saja
-                        $time = $session->start_time->format('H:i:s').' - '.$session->end_time->format('H:i:s');
+                        $h = floor($sec / 3600);
+                        $m = floor(($sec % 3600) / 60);
+                        $s = $sec % 60;
+                        $parts = [];
+                        if ($h) $parts[] = "$h jam";
+                        if ($m) $parts[] = "$m menit";
+                        $parts[] = "$s detik";
+                        $dur = implode(' ', $parts);
+                        // Waktu (format jam)
+                        $time = $session->start_time->format('H:i:s') . ' - ' . $session->end_time->format('H:i:s');
                         // Skor
-                        $score = ($session->correct_count ?? 0)*10;
+                        $score = ($session->correct_count ?? 0) * 10;
                         @endphp
                         <td class="px-4 py-2 border text-center">{{ $dur }}</td>
                         <td class="px-4 py-2 border text-center">{{ $time }}</td>
@@ -64,6 +69,7 @@
                         @endif
                     </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>

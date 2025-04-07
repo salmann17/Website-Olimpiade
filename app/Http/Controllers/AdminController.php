@@ -6,6 +6,7 @@ use App\Models\QuizSchedule;
 use App\Models\QuizSession;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -113,16 +114,41 @@ class AdminController extends Controller
         $selectedScheduleId = $request->get('schedule_id', 0);
         $search = $request->get('search');
 
-        $subSql = 'exists (
-            select 1 from quiz_sessions 
-            where quiz_sessions.user_id = users.id 
-            and quiz_sessions.quiz_schedule_id = ?
-        )';
-
         $userQuery = User::where('role', 'peserta')
-            ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"))
-            ->orderByRaw("$subSql desc", [$selectedScheduleId])
-            ->orderBy('username');
+            ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"));
+
+        if ($selectedScheduleId) {
+            $userQuery->leftJoin('quiz_sessions', function ($join) use ($selectedScheduleId) {
+                $join->on('users.id', '=', 'quiz_sessions.user_id')
+                    ->where('quiz_sessions.quiz_schedule_id', $selectedScheduleId);
+            })
+                ->leftJoin(DB::raw("(SELECT quiz_sessions.id AS session_id,
+                                    quiz_sessions.user_id,
+                                    COUNT(*) AS correct_count
+                             FROM quiz_answers
+                             JOIN quiz_sessions 
+                                ON quiz_answers.quiz_session_id = quiz_sessions.id
+                             WHERE quiz_answers.is_correct = 1
+                             GROUP BY quiz_sessions.id, quiz_sessions.user_id
+                            ) AS sub"), 'sub.session_id', '=', 'quiz_sessions.id')
+
+                ->select(
+                    'users.*',
+                    DB::raw("sub.correct_count"),
+                    DB::raw("TIMESTAMPDIFF(SECOND, quiz_sessions.start_time, quiz_sessions.end_time) as duration")
+                )
+
+                ->orderByRaw("IFNULL(sub.correct_count, 0) DESC")
+
+                ->orderByRaw("IFNULL(duration, 9999999) ASC");
+        } else {
+            $userQuery->orderBy('username');
+        }
+
+        $users = $userQuery->paginate(15)->appends([
+            'schedule_id' => $selectedScheduleId,
+            'search'      => $search,
+        ]);
 
         $sessions = collect();
         if ($selectedScheduleId) {
@@ -134,11 +160,6 @@ class AdminController extends Controller
                 ->keyBy('user_id');
         }
 
-        $users = $userQuery->paginate(15)->appends([
-            'schedule_id' => $selectedScheduleId,
-            'search'      => $search,
-        ]);
-
         return view('admin.hasil-ujian', compact(
             'schedules',
             'selectedScheduleId',
@@ -147,6 +168,9 @@ class AdminController extends Controller
             'sessions'
         ));
     }
+
+
+
 
     public function dashboard()
     {
