@@ -44,19 +44,39 @@
                         if ($session->warning_count == 0) {
                         $txt = 'Aman';
                         $bg = 'bg-green-300';
-                        $groupHover = 'group-hover:bg-green-100';
+                        $groupHover = 'group-hover:bg-green-500';
                         } elseif ($session->warning_count == 1) {
                         $txt = 'Peringatan';
                         $bg = 'bg-yellow-300';
-                        $groupHover = 'group-hover:bg-yellow-100';
+                        $groupHover = 'group-hover:bg-yellow-500';
                         } else {
                         $txt = 'Diskualifikasi';
                         $bg = 'bg-red-300';
-                        $groupHover = 'group-hover:bg-red-100';
+                        $groupHover = 'group-hover:bg-red-500';
+                        }
+
+                        $statusText = '';
+                        if ($session) {
+                        switch ($session->status) {
+                        case 'in_progress':
+                        $statusText = 'Sedang Dikerjakan';
+                        break;
+                        case 'submitted':
+                        $statusText = 'Telah Dikerjakan';
+                        break;
+                        case 'force_submitted':
+                        $statusText = 'Terkena Pelanggaran';
+                        break;
+                        default:
+                        $statusText = $session->status;
+                        break;
+                        }
+                        } else {
+                        $statusText = '–';
                         }
                         @endphp
                         <td class="px-4 py-2 border {{ $bg }} {{ $groupHover }} text-center">{{ $txt }}</td>
-                        <td class="px-4 py-2 border text-center">{{ $session->status }}</td>
+                        <td class="px-4 py-2 border text-center">{{ $statusText }}</td>
                         @else
                         <td class="px-4 py-2 border text-center">–</td>
                         <td class="px-4 py-2 border text-center">–</td>

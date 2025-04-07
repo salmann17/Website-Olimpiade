@@ -200,4 +200,67 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('warningData', 'scoreData'));
     }
+
+    public function export(Request $request)
+    {
+        $selectedScheduleId = $request->get('schedule_id', 0);
+        $search = $request->get('search');
+
+        $userQuery = User::where('role', 'peserta')
+            ->when($search, fn($q) => $q->where('username', 'like', "%{$search}%"));
+
+        if ($selectedScheduleId) {
+            $userQuery->leftJoin('quiz_sessions', function ($join) use ($selectedScheduleId) {
+                $join->on('users.id', '=', 'quiz_sessions.user_id')
+                    ->where('quiz_sessions.quiz_schedule_id', $selectedScheduleId);
+            })
+                ->select(
+                    'users.*',
+                    DB::raw("TIMESTAMPDIFF(SECOND, quiz_sessions.start_time, quiz_sessions.end_time) as duration"),
+                    'quiz_sessions.skor'
+                )
+                ->orderBy('quiz_sessions.skor', 'desc')
+                ->orderByRaw("IFNULL(TIMESTAMPDIFF(SECOND, quiz_sessions.start_time, quiz_sessions.end_time), 9999999) ASC");
+        } else {
+            $userQuery->orderBy('username');
+        }
+
+        $users = $userQuery->get();
+
+        $data = [];
+        $rowNumber = 1;
+        foreach ($users as $user) {
+            $session = QuizSession::where('quiz_schedule_id', $selectedScheduleId)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($session && $session->start_time && $session->end_time) {
+                $sec = abs($session->end_time->diffInSeconds($session->start_time));
+                $h = floor($sec / 3600);
+                $m = floor(($sec % 3600) / 60);
+                $s = $sec % 60;
+                $parts = [];
+                if ($h) $parts[] = "$h jam";
+                if ($m) $parts[] = "$m menit";
+                $parts[] = "$s detik";
+                $dur = implode(' ', $parts);
+                $time = $session->start_time->format('H:i:s') . ' - ' . $session->end_time->format('H:i:s');
+                $skor = $session->skor;
+            } else {
+                $dur = '–';
+                $time = '–';
+                $skor = '–';
+            }
+
+            $data[] = [
+                'No' => $rowNumber++,
+                'Username' => $user->username,
+                'Durasi' => $dur,
+                'Waktu' => $time,
+                'Skor' => $skor,
+            ];
+        }
+
+        return response()->json($data);
+    }
 }

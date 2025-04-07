@@ -22,8 +22,16 @@
         </form>
 
         @if($selectedScheduleId)
+        <div class="mb-4">
+            <button id="export-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded">
+                Export Excel
+            </button>
+        </div>
+        @endif
+
+        @if($selectedScheduleId)
         <div class="overflow-x-auto">
-            <table class="min-w-full border-separate" style="border-spacing:0">
+            <table id="hasil-ujian-table" class="min-w-full border-separate" style="border-spacing:0">
                 <thead class="bg-gradient-to-br from-[#48dbfb] to-[#5f27cd]">
                     <tr>
                         <th class="px-4 py-2 text-white">No</th>
@@ -67,7 +75,6 @@
                         @endif
                     </tr>
                     @endforeach
-
                 </tbody>
             </table>
         </div>
@@ -79,3 +86,94 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script>
+    const scheduleTitle = "{{ optional($schedules->firstWhere('id', $selectedScheduleId))->title ?? '' }}";
+    let fileName = 'hasilujian';
+    if (scheduleTitle) {
+        fileName += '_' + scheduleTitle.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+    }
+
+    document.getElementById('export-btn').addEventListener('click', function() {
+        fetch("{{ route('admin.hasil.ujian.export') }}?schedule_id={{ $selectedScheduleId }}&search={{ $search }}")
+            .then(res => res.json())
+            .then(data => {
+                const workbook = new ExcelJS.Workbook();
+                const worksheet = workbook.addWorksheet('Hasil Ujian');
+
+                const headerRow = worksheet.addRow(["No", "Username", "Durasi", "Waktu", "Skor"]);
+                headerRow.eachCell((cell) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FF5F27CD'
+                        } 
+                    };
+                    cell.font = {
+                        bold: true,
+                        color: {
+                            argb: 'FFFFFFFF'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                });
+
+                data.forEach((row, index) => {
+                    const excelRow = worksheet.addRow([
+                        row.No,
+                        row.Username,
+                        row.Durasi,
+                        row.Waktu,
+                        row.Skor
+                    ]);
+                    const fillColor = (index % 2 === 0) ? 'FFD1E8FF' : 'FFE5E5E5';
+                    excelRow.eachCell((cell) => {
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: fillColor
+                            }
+                        };
+                    });
+                });
+
+                worksheet.columns.forEach(column => {
+                    let maxLength = 10;
+                    column.eachCell({
+                        includeEmpty: true
+                    }, cell => {
+                        const columnLength = cell.value ? cell.value.toString().length : 0;
+                        if (columnLength > maxLength) {
+                            maxLength = columnLength;
+                        }
+                    });
+                    column.width = maxLength + 2;
+                });
+
+                workbook.xlsx.writeBuffer().then(buffer => {
+                    const blob = new Blob([buffer], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName + '.xlsx'; 
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire('Error', 'Gagal mengekspor data.', 'error');
+            });
+    });
+</script>
+@endpush
