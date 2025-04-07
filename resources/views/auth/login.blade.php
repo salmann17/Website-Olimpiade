@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  @vite('resources/css/app.css')
   <meta charset="UTF-8">
   <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>

@@ -226,6 +226,7 @@
                         text: 'Anda telah melanggar aturan sebanyak 2 kali. Ujian dianggap selesai.',
                         icon: 'info'
                     }).then(() => {
+                        localStorage.removeItem('examState');
                         window.close();
                     });
                 }).catch(err => {
@@ -237,11 +238,12 @@
     </script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", restoreExamState);
+
         // Saat quiz dimulai:
         if (!localStorage.getItem('quiz_session_id')) {
             localStorage.setItem('quiz_session_id', "{{ $quizSession->id }}");
         }
-        // Pada halaman load, cek jika quiz_session_id sudah ada, maka gunakan data tersebut untuk restore state.
 
         const totalSoal = parseInt(document.getElementById('total-soal').value, 10);
         let durationMinutes = parseInt(document.getElementById('duration-minutes').value, 10);
@@ -249,6 +251,48 @@
         let answerStatus = Array(totalSoal).fill(false);
         let remainingSeconds = durationMinutes * 60;
 
+        // Fungsi untuk menyimpan state ujian ke localStorage
+        function saveExamState() {
+            const state = {
+                currentQuestion: currentQuestion,
+                remainingSeconds: remainingSeconds,
+                answerStatus: answerStatus, // Pastikan properti ini sudah ada
+                answers: {} // Menyimpan jawaban per pertanyaan
+            };
+            document.querySelectorAll('.answer-form').forEach(form => {
+                const qId = form.getAttribute('data-question-id');
+                const selected = form.querySelector('input[name="answer-' + qId + '"]:checked');
+                state.answers[qId] = selected ? selected.value : '';
+            });
+            localStorage.setItem('examState', JSON.stringify(state));
+        }
+
+
+        // Fungsi untuk memulihkan state ujian dari localStorage
+        function restoreExamState() {
+            const savedState = localStorage.getItem('examState');
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.currentQuestion !== undefined) currentQuestion = state.currentQuestion;
+                    if (state.remainingSeconds !== undefined) remainingSeconds = state.remainingSeconds;
+                    if (state.answerStatus && state.answerStatus.length === totalSoal) {
+                        answerStatus = state.answerStatus;
+                    }
+                    // Pulihkan nilai jawaban
+                    if (state.answers) {
+                        for (const qId in state.answers) {
+                            const radio = document.querySelector('input[name="answer-' + qId + '"][value="' + state.answers[qId] + '"]');
+                            if (radio) {
+                                radio.checked = true;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Gagal memulihkan state ujian:", e);
+                }
+            }
+        }
 
 
         // Fungsi untuk menampilkan soal sesuai index
@@ -258,6 +302,8 @@
             // Tampilkan soal dengan index tertentu
             document.getElementById('question-' + index).classList.remove('hidden');
             updateNavButtons();
+            saveExamState();
+
         }
 
         // Fungsi untuk update tampilan tombol navigasi
@@ -358,6 +404,7 @@
                             'Waktu ujian telah habis. Jawaban anda telah disimpan.' : 'Jawaban anda telah disimpan.',
                         icon: 'info'
                     }).then(() => {
+                        localStorage.removeItem('examState');
                         window.close(); // Tutup jendela ujian setelah submit
                     });
                 })
@@ -375,6 +422,7 @@
                 submitExam(true);
             } else {
                 remainingSeconds--;
+                saveExamState();
             }
         }
 
@@ -407,6 +455,7 @@
                 }
                 // Tandai soal ini sebagai sudah dijawab di array status
                 answerStatus[currentQuestion] = true;
+                saveExamState();
 
                 // Kirim Ajax untuk simpan jawaban menggunakan variabel yang sudah didefinisikan
                 fetch(quizAnswerRoute, {
