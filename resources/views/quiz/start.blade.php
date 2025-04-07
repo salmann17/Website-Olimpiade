@@ -34,12 +34,12 @@
             @foreach($questions as $question)
             <div class="question hidden" id="question-{{ $loop->index }}">
                 <h2 class="font-bold text-white mb-2">Soal {{ $loop->iteration }}</h2>
-                <p class="mb-4 text-white">{!! nl2br(e($question->question)) !!}</p>
+                <p class="mb-4 text-white text-xl">{!! nl2br(e($question->question)) !!}</p>
                 @if($question->type === 'multiple_choice')
                 <form class="answer-form" data-question-id="{{ $question->id }}">
                     @if($question->pilihan_a)
                     <div class="mb-2">
-                        <label class="text-white">
+                        <label class="text-white text-lg">
                             <input type="radio" name="answer-{{ $question->id }}" value="a" class="mr-2">
                             {{ $question->pilihan_a }}
                         </label>
@@ -47,7 +47,7 @@
                     @endif
                     @if($question->pilihan_b)
                     <div class="mb-2">
-                        <label class="text-white">
+                        <label class="text-white text-lg">
                             <input type="radio" name="answer-{{ $question->id }}" value="b" class="mr-2">
                             {{ $question->pilihan_b }}
                         </label>
@@ -55,7 +55,7 @@
                     @endif
                     @if($question->pilihan_c)
                     <div class="mb-2">
-                        <label class="text-white">
+                        <label class="text-white text-lg">
                             <input type="radio" name="answer-{{ $question->id }}" value="c" class="mr-2">
                             {{ $question->pilihan_c }}
                         </label>
@@ -63,7 +63,7 @@
                     @endif
                     @if($question->pilihan_d)
                     <div class="mb-2">
-                        <label class="text-white">
+                        <label class="text-white text-lg">
                             <input type="radio" name="answer-{{ $question->id }}" value="d" class="mr-2">
                             {{ $question->pilihan_d }}
                         </label>
