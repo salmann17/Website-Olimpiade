@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75] py-8 px-4">
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Pemantauan Ujian</h2>
+    <div class="max-w-5xl mx-auto bg-black rounded-2xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-4 text-white">Pemantauan Ujian</h2>
 
         <form id="filter-form" action="{{ route('admin.pantau.ujian') }}" method="GET" class="mb-4 flex gap-2">
             <select name="schedule_id" class="px-3 py-2 border rounded" onchange="document.getElementById('filter-form').submit()">

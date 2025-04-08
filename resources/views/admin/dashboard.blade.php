@@ -5,9 +5,9 @@
     <!-- Baris Pertama: Statistik Warning Count -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         @foreach(['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal'] as $stage)
-        <div class="bg-white rounded-lg p-4 shadow-lg">
-            <h3 class="text-lg font-semibold mb-4">{{ $stage }} - Warning Count</h3>
-            <canvas id="warningChart{{ $loop->index }}" class="w-full h-64"></canvas>
+        <div class="bg-black rounded-lg p-4 shadow-lg">
+            <h3 class="text-lg font-semibold mb-4 text-white">{{ $stage }} - Warning Count</h3>
+            <canvas id="warningChart{{ $loop->index }}" class="w-full h-64 "></canvas>
         </div>
         @endforeach
     </div>
@@ -15,8 +15,8 @@
     <!-- Baris Kedua: Statistik Nilai -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach(['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal'] as $stage)
-        <div class="bg-white rounded-lg p-4 shadow-lg">
-            <h3 class="text-lg font-semibold mb-4">{{ $stage }} - Distribusi Nilai</h3>
+        <div class="bg-black rounded-lg p-4 shadow-lg">
+            <h3 class="text-lg font-semibold mb-4 text-white">{{ $stage }} - Distribusi Nilai</h3>
             <canvas id="scoreChart{{ $loop->index }}" class="w-full h-64"></canvas>
         </div>
         @endforeach
@@ -31,8 +31,8 @@
     const warningData = JSON.parse(document.getElementById('warning-data').value);
     const scoreData = JSON.parse(document.getElementById('score-data').value);
 
-    const warningColors = ['#4CAF50', '#FFEB3B', '#F44336'];
-    const scoreColors = '#2196F3';
+    const warningColors = ['#06FF00', '#FFFF00', '#FF1700'];
+    const scoreColors = '#3DB2FF';
 
     warningData.forEach((data, index) => {
         new Chart(document.getElementById(`warningChart${index}`), {
@@ -48,7 +48,7 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'bottom' }
+                    legend: { position: 'bottom', labels: { color: '#ffffff' } } 
                 }
             }
         });
@@ -68,9 +68,31 @@
             },
             options: {
                 responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#ffffff' } }
+                },
                 scales: {
-                    y: { beginAtZero: true },
-                    x: { title: { display: true, text: 'Rentang Nilai' } }
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#ffffff' 
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jumlah Peserta',
+                            color: '#ffffff'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#ffffff' 
+                        },
+                        title: {
+                            display: true,
+                            text: 'Rentang Nilai',
+                            color: '#ffffff'
+                        }
+                    }
                 }
             }
         });

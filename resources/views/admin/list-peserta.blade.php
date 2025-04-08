@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75] py-8 px-4">
-    <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">List Peserta</h2>
+    <div class="max-w-6xl mx-auto bg-black rounded-2xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-4 text-white">List Peserta</h2>
 
         <!-- Search Form -->
         <form action="{{ route('admin.peserta.list') }}" method="GET" class="mb-4 flex gap-2">
