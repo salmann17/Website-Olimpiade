@@ -28,6 +28,23 @@
     if ($m) $parts[] = "$m menit";
     $parts[] = "$s detik";
     $durationUsed = implode(' ', $parts);
+
+    $statusText = '';
+    if ($session) {
+    switch ($session->status) {
+    case 'in_progress':
+    $statusText = 'Sedang Mengerjakan';
+    break;
+    case 'submitted':
+    $statusText = 'Telah Dikerjakan';
+    break;
+    case 'force_submitted':
+    $statusText = 'Terkena Pelanggaran';
+    break;
+    default:
+    $statusText = $session->status;
+    break;
+    }}
     @endphp
 
     <div class="bg-[#004a80] rounded shadow p-4 mb-4">
@@ -40,7 +57,7 @@
         </p>
         <p class="text-sm text-white mb-1">
             <strong>Status:</strong>
-            {{ strtoupper($session->status) }}
+            {{ $statusText }}
         </p>
         <p class="text-sm text-white mb-1">
             <strong>Durasi yang Digunakan:</strong>

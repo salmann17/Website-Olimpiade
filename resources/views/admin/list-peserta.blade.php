@@ -33,7 +33,7 @@
                         <td class="px-4 py-2 border">{{ $user->fullname }}</td>
                         <td class="px-4 py-2 border">
                             <button
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                                class="bg-[#004a80] hover:bg-blue-300 text-white px-3 py-1 rounded"
                                 onclick="editPeserta({{ $user->id }}, '{{ $user->username }}', '{{ $user->fullname }}')">
                                 Edit
                             </button>
