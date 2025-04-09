@@ -3,7 +3,7 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-r from-[#f6f9fc] via-[#b6cbe0] to-[#002855] py-8 px-4">
     <div class="max-w-5xl mx-auto bg-transparent rounded-2xl shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-4 text-white">Pemantauan Ujian</h2>
+        <h2 class="text-2xl font-bold mb-4 text-[#004a80]">Pemantauan Ujian</h2>
 
         <form id="filter-form" action="{{ route('admin.pantau.ujian') }}" method="GET" class="mb-4 flex gap-2">
             <select name="schedule_id" class="px-3 py-2 border rounded" onchange="document.getElementById('filter-form').submit()">
@@ -22,7 +22,7 @@
         @if($selectedScheduleId)
         <div class="overflow-x-auto">
             <table class="min-w-full border-separate" style="border-spacing:0">
-                <thead class="bg-gradient-to-br from-[#48dbfb] to-[#5f27cd]">
+                <thead class="bg-[#004a80]">
                     <tr>
                         <th class="px-4 py-2 text-white">No</th>
                         <th class="px-4 py-2 text-white">Username</th>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-r from-[#f6f9fc] via-[#b6cbe0] to-[#002855] py-8 px-4">
     <div class="max-w-6xl mx-auto bg-transparent rounded-2xl shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-4 text-white">List Peserta</h2>
+        <h2 class="text-2xl font-bold mb-4 text-[#004a80]">List Peserta</h2>
 
         <!-- Search Form -->
         <form action="{{ route('admin.peserta.list') }}" method="GET" class="mb-4 flex gap-2">
@@ -15,7 +15,7 @@
 
         <div class="overflow-x-auto">
             <table class="min-w-full border-separate" style="border-spacing:0">
-                <thead class="bg-gradient-to-br from-[#48dbfb] to-[#5f27cd]">
+                <thead class="bg-[#004a80]">
                     <tr>
                         <th class="px-4 py-2 text-white">No</th>
                         <th class="px-4 py-2 text-white">Username</th>
