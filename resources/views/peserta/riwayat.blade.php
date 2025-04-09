@@ -30,7 +30,7 @@
     $durationUsed = implode(' ', $parts);
     @endphp
 
-    <div class="bg-gradient-to-b from-[#5f27cd] to-[#48dbfb] rounded shadow p-4 mb-4">
+    <div class="bg-gradient-to-b from-[#004a80] to-white rounded shadow p-4 mb-4">
         <h2 class="text-xl font-bold mb-2 text-white">
             {{ $session->schedule->title }}
         </h2>

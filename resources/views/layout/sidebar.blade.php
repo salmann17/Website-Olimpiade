@@ -5,7 +5,7 @@ $current = request()->route()->getName();
 @endphp
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-<div class="w-64 min-h-screen bg-gradient-to-b from-[#5f27cd] to-[#48dbfb] text-white p-6 shadow-lg flex flex-col justify-between">
+<div class="w-64 min-h-screen bg-gradient-to-b from-[#004a80] to-white text-white p-6 shadow-lg flex flex-col justify-between">
     {{-- Header --}}
     <div>
         <div class="flex items-center justify-between mb-6">

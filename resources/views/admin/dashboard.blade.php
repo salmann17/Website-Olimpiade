@@ -38,7 +38,7 @@
         new Chart(document.getElementById(`warningChart${index}`), {
             type: 'pie',
             data: {
-                labels: ['0 Warning', '1 Warning', '2 Warnings'],
+                labels: ['Aman', 'Peringatan', 'Diskualifikasi'],
                 datasets: [{
                     data: data,
                     backgroundColor: warningColors,

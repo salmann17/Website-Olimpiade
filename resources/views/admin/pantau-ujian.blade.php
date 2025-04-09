@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75] py-8 px-4">
+<div class="min-h-screen bg-gradient-to-r from-[#f6f9fc] via-[#b6cbe0] to-[#002855] py-8 px-4">
     <div class="max-w-5xl mx-auto bg-transparent rounded-2xl shadow-lg p-6">
         <h2 class="text-2xl font-bold mb-4 text-white">Pemantauan Ujian</h2>
 
@@ -59,7 +59,7 @@
                         if ($session) {
                         switch ($session->status) {
                         case 'in_progress':
-                        $statusText = 'Sedang Dikerjakan';
+                        $statusText = 'Sedang Mengerjakan';
                         break;
                         case 'submitted':
                         $statusText = 'Telah Dikerjakan';

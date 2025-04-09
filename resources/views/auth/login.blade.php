@@ -10,15 +10,15 @@
   <link rel="icon" href="{{ asset('icon.png') }}" type="image/png">
 </head>
 
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75]">
-  <div class="bg-gradient-to-br from-[#48dbfb] to-[#5f27cd] p-8 rounded-2xl shadow-2xl w-full max-w-sm text-white text-center space-y-5">
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#004a80] to-white">
+  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-white text-center space-y-5">
 
     <div>
       <img src="{{ asset('logo.png') }}" alt="Logo" class="h-12 mx-auto mb-2">
     </div>
     <div>
-      <h2 class="text-l font-bold">Selamat Datang di Portal Olimpiade</h2>
-      <p class="text-sm text-white/80">Silahkan Login!</p>
+      <h2 class="text-l font-bold text-[#004a80]">Selamat Datang di Portal Olimpiade</h2>
+      <p class="text-sm text-[#004a80] font-semibold">Silahkan Login!</p>
     </div>
     <form action="{{ route('login.submit') }}" method="POST" class="text-left space-y-4">
       @csrf
@@ -32,7 +32,7 @@
         <input type="password" name="password" id="password" required
           class="w-full p-2 rounded-lg bg-white text-gray-800 focus:outline-none">
       </div>
-      <button type="submit" class="w-full py-2 bg-gray-600 text-[#ffffff] hover:text-[#5f27cd] font-semibold rounded-lg hover:bg-white transition">Login</button>
+      <button type="submit" class="w-full py-2 bg-[#004a80] text-[#ffffff] hover:text-[#dcdcdc] font-semibold rounded-lg hover:bg-gray-600 transition">Login</button>
     </form>
 
   </div>

@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75]">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#f6f9fc] via-[#b6cbe0] to-[#002855]">
     <div class="bg-transparent p-8 rounded-2xl shadow-2xl w-full max-w-sm text-white text-center space-y-5">
         <div>
             <h2 class="text-lg font-bold">Tambah Peserta Baru</h2>
