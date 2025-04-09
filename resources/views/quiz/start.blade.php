@@ -10,10 +10,27 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-gradient-to-br from-[#010101] via-[#2b2b4d] to-[#3b3b75] min-h-screen">
-    <div id="exam-content" class="p-6">
+<body class="bg-white min-h-screen">
+    <img src="{{ asset('bi.png') }}" alt="BI Logo" class="absolute top-0 left-0 m-4 h-12 opacity-80">
+    <img src="{{ asset('genbi.png') }}" alt="GenBI Logo" class="absolute top-0 right-0 m-4 h-12 opacity-80">
+    <div id="exam-content" class="p-6 pt-20">
         <h1 class="text-center text-3xl font-bold text-white my-4"></h1>
         <!-- Tombol untuk memulai fullscreen -->
+        <div id="exam-rules" class="max-w-3xl mx-auto mt-8 mb-6 p-6 bg-white rounded shadow">
+            <h2 class="text-2xl font-bold mb-4 text-center">Aturan Ujian</h2>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700 text-xl">
+                <li>Ujian harus diselesaikan dalam waktu yang telah ditentukan tanpa perpanjangan waktu.</li>
+                <li>Dilarang membuka tab baru atau berpindah jendela selama ujian berlangsung.</li>
+                <li>Peserta ujian wajib mengaktifkan mode layar penuh saat memulai ujian.</li>
+                <li>Setiap pelanggaran akan tercatat dan dapat menyebabkan diskualifikasi.</li>
+                <li>Gunakan perangkat yang stabil dan terhubung ke internet dengan baik.</li>
+                <li>Jawaban yang sudah dikirim tidak dapat diubah kembali.</li>
+                <li>Dilarang keras bekerja sama dengan peserta lain atau pihak ketiga.</li>
+                <li>Pastikan suara dan kamera (jika diperlukan) aktif selama ujian berlangsung.</li>
+                <li>Jika terjadi gangguan teknis, segera hubungi pengawas ujian melalui kanal resmi.</li>
+                <li>Semua jawaban akan dipantau dan diperiksa menggunakan sistem anti-kecurangan otomatis.</li>
+            </ol>
+        </div>
         <div class="flex justify-center">
             <button id="start-fullscreen" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded shadow-lg">
                 Mulai Ujian
@@ -21,27 +38,30 @@
         </div>
 
         <!-- Countdown Timer  -->
-        <div id="countdown-timer" class="text-center py-2 bg-blue-600 text-white mt-6 rounded hidden">
-            Sisa Waktu: <span id="timer"></span>
+        <div class="flex items-center justify-center">
+            <div id="countdown-timer" class="text-center py-4 bg-blue-600 text-white rounded-full px-4 text-3xl transition-colors duration-300 hidden">
+                Sisa Waktu: <span id="timer"></span>
+            </div>
         </div>
+
 
         <!-- Container Soal (hidden sampai Mulai Ujian ditekan) -->
         <div id="questions-container" class="mt-6 hidden">
             <!-- Soal-soal akan di-render di sini -->
             @foreach($questions as $question)
             <div class="question hidden" id="question-{{ $loop->index }}">
-                <h2 class="font-bold text-white mb-2">Soal {{ $loop->iteration }}</h2>
+                <h2 class="font-bold text-black mb-2 text-xl">Soal {{ $loop->iteration }}</h2>
                 @if($question->id == 76 && $schedule->id == 1)
                 <div class="text-center mb-4">
                     <img src="{{ asset('75k.jpg') }}" alt="Gambar 75k" class="mx-auto w-1/4">
                 </div>
                 @endif
-                <p class="mb-4 text-white text-xl">{!! nl2br(e($question->question)) !!}</p>
+                <p class="mb-4 text-black text-2xl">{!! nl2br(e($question->question)) !!}</p>
                 @if($question->type === 'multiple_choice')
                 <form class="answer-form" data-question-id="{{ $question->id }}">
                     @if($question->pilihan_a)
                     <div class="mb-2">
-                        <label class="text-white text-lg">
+                        <label class="text-black text-xl ">
                             <input type="radio" name="answer-{{ $question->id }}" value="a" class="mr-2">
                             {{ $question->pilihan_a }}
                         </label>
@@ -49,7 +69,7 @@
                     @endif
                     @if($question->pilihan_b)
                     <div class="mb-2">
-                        <label class="text-white text-lg">
+                        <label class="text-black text-xl ">
                             <input type="radio" name="answer-{{ $question->id }}" value="b" class="mr-2">
                             {{ $question->pilihan_b }}
                         </label>
@@ -57,7 +77,7 @@
                     @endif
                     @if($question->pilihan_c)
                     <div class="mb-2">
-                        <label class="text-white text-lg">
+                        <label class="text-black text-xl ">
                             <input type="radio" name="answer-{{ $question->id }}" value="c" class="mr-2">
                             {{ $question->pilihan_c }}
                         </label>
@@ -65,7 +85,7 @@
                     @endif
                     @if($question->pilihan_d)
                     <div class="mb-2">
-                        <label class="text-white text-lg">
+                        <label class="text-black text-xl">
                             <input type="radio" name="answer-{{ $question->id }}" value="d" class="mr-2">
                             {{ $question->pilihan_d }}
                         </label>
@@ -88,7 +108,6 @@
         <input type="hidden" id="duration-minutes" value="{{ $schedule->duration }}">
     </div>
 
-
     <script>
         // Fungsi untuk meminta fullscreen
         function requestFullScreen() {
@@ -107,7 +126,9 @@
         // Pastikan fullscreen dipicu oleh aksi klik pengguna
         document.getElementById("start-fullscreen").addEventListener("click", function() {
             requestFullScreen();
-            // Sembunyikan tombol setelah diklik
+
+            const rules = document.getElementById('exam-rules');
+            rules.classList.add('hidden');
             this.style.display = "none";
         });
 
@@ -283,7 +304,7 @@
                         answerStatus = state.answerStatus;
                     }
                     if (state.warnings !== undefined) {
-                        warnings = state.warnings; 
+                        warnings = state.warnings;
                     }
                     // Pulihkan nilai jawaban
                     if (state.answers) {
@@ -424,15 +445,41 @@
         function updateTimer() {
             let minutes = Math.floor(remainingSeconds / 60);
             let seconds = remainingSeconds % 60;
-            document.getElementById('timer').textContent = `${minutes} menit ${seconds} detik`;
+
+            const timerElement = document.getElementById('timer');
+            const countdownElement = document.getElementById('countdown-timer');
+
+            // Format teks timer
+            timerElement.textContent = `${minutes} menit ${seconds} detik`;
+
+            // Ubah warna jika waktu kurang dari 5 menit
+            if (remainingSeconds < 300) {
+                countdownElement.classList.remove('bg-blue-600');
+                countdownElement.classList.add('bg-red-600');
+            } else {
+                countdownElement.classList.remove('bg-red-600');
+                countdownElement.classList.add('bg-blue-600');
+            }
+
             if (remainingSeconds <= 0) {
-                submitExam(true);
+                submitExam(true); 
             } else {
                 remainingSeconds--;
-                saveExamState();
+                saveExamState(); 
             }
         }
 
+        function startCountdown(durationInMinutes) {
+            remainingSeconds = durationInMinutes * 60;
+            updateTimer(); // Tampilkan waktu awal
+
+            const interval = setInterval(() => {
+                updateTimer();
+                if (remainingSeconds <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
         // --- Event ketika user mengklik tombol "Mulai Ujian" ---
         document.getElementById("start-fullscreen").addEventListener("click", function() {
             // Setelah fullscreen aktif, tampilkan container soal, navigasi, dan timer

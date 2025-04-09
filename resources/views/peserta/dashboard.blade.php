@@ -1,11 +1,29 @@
 @extends('layout.app')
 
 @section('content')
-<div class="flex items-center justify-center min-h-screen px-4">
-    <div class="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
+<style>
+    .watermark-container::before {
+        content: '';
+        position: fixed;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-image: url("{{ asset('bi.png') }}");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        opacity: 0.15;
+        width: 75%;
+        height: 75%;
+        z-index: 0;
+        pointer-events: none;
+    }
+</style>
+<div class="flex items-center justify-center min-h-screen px-4 watermark-container">
+    <div class="grid md:grid-cols-3 gap-6 w-full max-w-6xl relative z-10">
         @foreach ($schedules as $schedule)
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-blue-600 text-white p-4 flex justify-between">
+            <div class="bg-[#004a80] text-white p-4 flex justify-between">
                 <h3 class="font-bold">{{ strtoupper($schedule->title) }}</h3>
                 <span class="text-xs bg-green-400 text-white px-2 py-1 rounded">GenBI</span>
             </div>
@@ -27,7 +45,7 @@
                 Belum dibuka
             </div>
             @elseif ($schedule->status === 'available')
-            <div class="bg-blue-600 hover:bg-blue-700 text-white text-center py-2">
+            <div class="bg-[#004a80] hover:bg-blue-300 text-white text-center py-2">
                 <a href="javascript:void(0)" onclick="checkSession({{ $schedule->id }})" class="inline-flex items-center gap-2 justify-center">
                     <i class="fas fa-play"></i> Mulai
                 </a>

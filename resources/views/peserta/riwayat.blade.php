@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto py-6 p-6">
-    <h1 class="text-2xl font-bold mb-4 text-white">Riwayat Ujian</h1>
+    <h1 class="text-2xl font-bold mb-4 text-[#004a80]">Riwayat Ujian</h1>
 
     @forelse($sessions as $session)
     @php
@@ -30,7 +30,7 @@
     $durationUsed = implode(' ', $parts);
     @endphp
 
-    <div class="bg-gradient-to-b from-[#004a80] to-white rounded shadow p-4 mb-4">
+    <div class="bg-[#004a80] rounded shadow p-4 mb-4">
         <h2 class="text-xl font-bold mb-2 text-white">
             {{ $session->schedule->title }}
         </h2>
