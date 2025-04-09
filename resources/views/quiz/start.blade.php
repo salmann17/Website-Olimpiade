@@ -5,11 +5,8 @@
     <meta charset="UTF-8">
     <title>Ujian Dimulai</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -23,7 +20,7 @@
             </button>
         </div>
 
-        <!-- Countdown Timer (akan muncul setelah user klik Mulai Ujian) -->
+        <!-- Countdown Timer  -->
         <div id="countdown-timer" class="text-center py-2 bg-blue-600 text-white mt-6 rounded hidden">
             Sisa Waktu: <span id="timer"></span>
         </div>
@@ -34,6 +31,11 @@
             @foreach($questions as $question)
             <div class="question hidden" id="question-{{ $loop->index }}">
                 <h2 class="font-bold text-white mb-2">Soal {{ $loop->iteration }}</h2>
+                @if($question->id == 76 && $schedule->id == 1)
+                <div class="text-center mb-4">
+                    <img src="{{ asset('75k.jpg') }}" alt="Gambar 75k" class="mx-auto w-1/4">
+                </div>
+                @endif
                 <p class="mb-4 text-white text-xl">{!! nl2br(e($question->question)) !!}</p>
                 @if($question->type === 'multiple_choice')
                 <form class="answer-form" data-question-id="{{ $question->id }}">
@@ -69,7 +71,6 @@
                         </label>
                     </div>
                     @endif
-                    <!-- Hidden inputs bisa diletakkan di luar loop soal jika diperlukan -->
                 </form>
                 @endif
             </div>
@@ -333,7 +334,7 @@
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, submit',
-                    confirmButtonColor: '#3085d6', 
+                    confirmButtonColor: '#3085d6',
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
