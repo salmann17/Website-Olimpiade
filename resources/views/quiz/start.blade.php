@@ -84,7 +84,6 @@
             <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Soal Setelahnya</button>
         </div>
 
-        <!-- Hidden input untuk menyimpan nilai total soal dan durasi -->
         <input type="hidden" id="total-soal" value="{{ count($questions) }}">
         <input type="hidden" id="duration-minutes" value="{{ $schedule->duration }}">
     </div>
@@ -259,8 +258,9 @@
             const state = {
                 currentQuestion: currentQuestion,
                 remainingSeconds: remainingSeconds,
-                answerStatus: answerStatus, // Pastikan properti ini sudah ada
-                answers: {} // Menyimpan jawaban per pertanyaan
+                answerStatus: answerStatus,
+                answers: {},
+                warnings: warnings
             };
             document.querySelectorAll('.answer-form').forEach(form => {
                 const qId = form.getAttribute('data-question-id');
@@ -281,6 +281,9 @@
                     if (state.remainingSeconds !== undefined) remainingSeconds = state.remainingSeconds;
                     if (state.answerStatus && state.answerStatus.length === totalSoal) {
                         answerStatus = state.answerStatus;
+                    }
+                    if (state.warnings !== undefined) {
+                        warnings = state.warnings; 
                     }
                     // Pulihkan nilai jawaban
                     if (state.answers) {
