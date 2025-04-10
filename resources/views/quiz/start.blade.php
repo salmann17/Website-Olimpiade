@@ -56,40 +56,38 @@
                 </div>
                 @endif
                 <p class="mb-4 text-black text-2xl">{!! nl2br(e($question->question)) !!}</p>
+
                 @if($question->type === 'multiple_choice')
                 <form class="answer-form" data-question-id="{{ $question->id }}">
-                    @if($question->pilihan_a)
-                    <div class="mb-2">
-                        <label class="text-black text-xl ">
-                            <input type="radio" name="answer-{{ $question->id }}" value="a" class="mr-2">
-                            {{ $question->pilihan_a }}
+                    <div class="grid grid-cols-2 gap-4 w-full mx-auto">
+                        @if($question->pilihan_a)
+                        <label class="relative block bg-[#002855] text-white rounded-md p-4 cursor-pointer hover:bg-blue-400 w-full">
+                            <input type="radio" name="answer-{{ $question->id }}" value="a" class="absolute">
+                            <span class="ml-5 text-lg">{{ $question->pilihan_a }}</span>
                         </label>
-                    </div>
-                    @endif
-                    @if($question->pilihan_b)
-                    <div class="mb-2">
-                        <label class="text-black text-xl ">
-                            <input type="radio" name="answer-{{ $question->id }}" value="b" class="mr-2">
-                            {{ $question->pilihan_b }}
+                        @endif
+
+                        @if($question->pilihan_b)
+                        <label class="relative block bg-[#002855] text-white rounded-md p-4 cursor-pointer hover:bg-blue-600 w-full">
+                            <input type="radio" name="answer-{{ $question->id }}" value="b" class="absolute">
+                            <span class="ml-5 text-lg">{{ $question->pilihan_b }}</span>
                         </label>
-                    </div>
-                    @endif
-                    @if($question->pilihan_c)
-                    <div class="mb-2">
-                        <label class="text-black text-xl ">
-                            <input type="radio" name="answer-{{ $question->id }}" value="c" class="mr-2">
-                            {{ $question->pilihan_c }}
+                        @endif
+
+                        @if($question->pilihan_c)
+                        <label class="relative block bg-[#002855] text-white rounded-md p-4 cursor-pointer hover:bg-blue-600 w-full">
+                            <input type="radio" name="answer-{{ $question->id }}" value="c" class="absolute">
+                            <span class="ml-5 text-lg">{{ $question->pilihan_c }}</span>
                         </label>
-                    </div>
-                    @endif
-                    @if($question->pilihan_d)
-                    <div class="mb-2">
-                        <label class="text-black text-xl">
-                            <input type="radio" name="answer-{{ $question->id }}" value="d" class="mr-2">
-                            {{ $question->pilihan_d }}
+                        @endif
+
+                        @if($question->pilihan_d)
+                        <label class="relative block bg-[#002855] text-white rounded-md p-4 cursor-pointer hover:bg-blue-600 w-full">
+                            <input type="radio" name="answer-{{ $question->id }}" value="d" class="absolute">
+                            <span class="ml-5 text-lg">{{ $question->pilihan_d }}</span>
                         </label>
+                        @endif
                     </div>
-                    @endif
                 </form>
                 @endif
             </div>
