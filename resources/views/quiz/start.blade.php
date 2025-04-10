@@ -133,7 +133,6 @@
                 rules.classList.add('hidden');
             }
             this.style.display = "none";
-            // Set flag examJustStarted, dan reset setelah 3 detik (sesuaikan dengan kebutuhan)
             examJustStarted = true;
             setTimeout(() => {
                 examJustStarted = false;
@@ -141,15 +140,15 @@
 
             document.getElementById('questions-container').classList.remove('hidden');
             document.getElementById('countdown-timer').classList.remove('hidden');
-            // Tampilkan soal pertama
+         
             showQuestion(currentQuestion);
-            // Mulai timer
+        
             setInterval(updateTimer, 1000);
         });
 
-        // Counter untuk warning
+        
         let warnings = 0;
-        const maxWarnings = 2; // Pada warning ke-2, ujian akan force finish
+        const maxWarnings = 2; 
 
         // Fungsi AJAX untuk meng-update warning (warning pertama)
         function sendWarning() {
@@ -176,7 +175,7 @@
                 },
                 body: JSON.stringify({
                     quiz_session_id: "{{ $quizSession->id }}",
-                    force: true, // Flag force finish
+                    force: true,
                     answers: answers
                 })
             }).then(response => response.json());
@@ -199,17 +198,11 @@
             } else if (document.visibilityState === "visible" && wasHidden) {
                 wasHidden = false;
                 handleWarningEvent("Anda berpindah tab atau aplikasi!");
-                // Tambahkan pengecekan fullscreen
                 if (!document.fullscreenElement) {
                     handleWarningEvent("Anda keluar dari mode fullscreen!");
                 }
             }
         });
-        // Event: jendela kehilangan fokus
-        // window.addEventListener("blur", function() {
-        //     logEvent("window blur");
-        //     handleWarningEvent("Jendela kehilangan fokus!");
-        // });
 
         // Event: perubahan fullscreen (misalnya, user menekan ESC)
         document.addEventListener('fullscreenchange', function() {
@@ -222,15 +215,13 @@
 
         // Event: resize jendela (misalnya, user mengecilkan ukuran jendela)
         window.addEventListener("resize", function() {
-            if (examJustStarted) return; // Abaikan resize awal yang terjadi setelah masuk fullscreen
+            if (examJustStarted) return;
             logEvent("resize", "outerWidth: " + window.outerWidth + ", outerHeight: " + window.outerHeight);
 
-            // Jika tidak dalam fullscreen, anggap sebagai pelanggaran
             if (!document.fullscreenElement) {
                 handleWarningEvent("Anda keluar dari mode fullscreen!");
             }
 
-            // Peringatan untuk perubahan ukuran jendela
             if (window.outerWidth < screen.width || window.outerHeight < screen.height) {
                 handleWarningEvent("Ukuran jendela telah diubah!");
             }
@@ -239,7 +230,7 @@
         let examFinished = false;
         // Logika pemberian warning dan force finish
         function handleWarningEvent(message) {
-            if (examFinished) return; // kalau sudah finished, jangan eksekusi lagi
+            if (examFinished) return; 
             if (Date.now() < suppressWarningsUntil) return;
             suppressWarningsUntil = Date.now() + 1000;
 
@@ -253,7 +244,6 @@
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#3085d6'
                     }).then(() => {
-                        // Coba kembali minta fullscreen jika user belum di mode fullscreen
                         if (!document.fullscreenElement) {
                             requestFullScreen();
                         }
@@ -336,7 +326,6 @@
                     if (state.warnings !== undefined) {
                         warnings = state.warnings;
                     }
-                    // Pulihkan nilai jawaban
                     if (state.answers) {
                         for (const qId in state.answers) {
                             const radio = document.querySelector('input[name="answer-' + qId + '"][value="' + state.answers[qId] + '"]');
@@ -351,12 +340,10 @@
             }
         }
 
-
         // Fungsi untuk menampilkan soal sesuai index
         function showQuestion(index) {
-            // Sembunyikan semua soal
             document.querySelectorAll('.question').forEach(el => el.classList.add('hidden'));
-            // Tampilkan soal dengan index tertentu
+
             document.getElementById('question-' + index).classList.remove('hidden');
             updateNavButtons();
             saveExamState();
@@ -378,14 +365,11 @@
             } else {
                 document.getElementById('navigation').classList.add('hidden');
             }
-            // Karena tidak ada tombol kembali dan tombol daftar, tidak perlu mengatur tampilan lain.
-            // Pada tombol NEXT, jika soal terakhir, ubah teksnya menjadi "Submit Ujian", jika tidak tetap "Soal Setelahnya"
             document.getElementById('next-btn').textContent = (currentQuestion === totalSoal - 1) ? 'Submit Ujian' : 'Soal Setelahnya';
         }
 
         document.getElementById('next-btn').addEventListener('click', function() {
             if (currentQuestion === totalSoal - 1) {
-                // Popup konfirmasi submit ujian
                 Swal.fire({
                     title: 'Submit Ujian',
                     text: 'Apakah anda yakin ingin menyelesaikan ujian?',
@@ -414,7 +398,6 @@
 
         // Fungsi untuk submit ujian (digunakan saat waktu habis atau submit manual)
         function submitExam(autoSubmit) {
-            // Kumpulkan data jawaban dari setiap form
             let finalAnswers = [];
             document.querySelectorAll('.answer-form').forEach(form => {
                 const questionId = form.getAttribute('data-question-id');
@@ -468,10 +451,8 @@
             const timerElement = document.getElementById('timer');
             const countdownElement = document.getElementById('countdown-timer');
 
-            // Format teks timer
             timerElement.textContent = `${minutes} menit ${seconds} detik`;
 
-            // Ubah warna jika waktu kurang dari 5 menit
             if (remainingSeconds < 300) {
                 countdownElement.classList.remove('bg-blue-600');
                 countdownElement.classList.add('bg-red-600');
@@ -490,7 +471,7 @@
 
         function startCountdown(durationInMinutes) {
             remainingSeconds = durationInMinutes * 60;
-            updateTimer(); // Tampilkan waktu awal
+            updateTimer(); 
 
             const interval = setInterval(() => {
                 updateTimer();
@@ -501,7 +482,6 @@
         }
         // --- Event ketika user mengklik tombol "Mulai Ujian" ---
         document.getElementById("start-fullscreen").addEventListener("click", function() {
-            // Setelah fullscreen aktif, tampilkan container soal, navigasi, dan timer
             document.getElementById('questions-container').classList.remove('hidden');
             document.getElementById('navigation').classList.remove('hidden');
             document.getElementById('countdown-timer').classList.remove('hidden');
@@ -518,11 +498,9 @@
                 const questionId = this.getAttribute('data-question-id');
                 let answerElement = this.querySelector('input[name="answer-' + questionId + '"]:checked');
                 let answer = answerElement ? answerElement.value : '';
-                // Tandai soal aktif sudah dijawab
                 answerStatus[currentQuestion] = true;
                 saveExamState();
 
-                // Kirim jawaban ke server secara segera
                 fetch(quizAnswerRoute, {
                         method: 'POST',
                         headers: {
@@ -538,7 +516,6 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("Jawaban tersimpan:", data);
-                        // Tampilkan navigasi (NEXT) hanya jika jawaban telah dipilih
                         document.getElementById('navigation').classList.remove('hidden');
                     })
                     .catch(err => console.error(err));
