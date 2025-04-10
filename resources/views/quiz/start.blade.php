@@ -98,10 +98,8 @@
         </div>
 
         <!-- Navigasi Soal -->
-        <div id="navigation" class="flex justify-between mt-6 hidden">
-            <button id="prev-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Soal Sebelumnya</button>
-            <button id="daftar-soal-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Daftar Soal</button>
-            <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Soal Setelahnya</button>
+        <div id="navigation" class="flex justify-end mt-6 hidden">
+            <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded shadow">Soal Setelahnya</button>
         </div>
 
         <input type="hidden" id="total-soal" value="{{ count($questions) }}">
@@ -111,6 +109,7 @@
     <script>
         let suppressWarningsUntil = 0;
         let examJustStarted = true;
+
         // Fungsi untuk meminta fullscreen
         function requestFullScreen() {
             const docElm = document.documentElement;
@@ -139,6 +138,13 @@
             setTimeout(() => {
                 examJustStarted = false;
             }, 2000);
+
+            document.getElementById('questions-container').classList.remove('hidden');
+            document.getElementById('countdown-timer').classList.remove('hidden');
+            // Tampilkan soal pertama
+            showQuestion(currentQuestion);
+            // Mulai timer
+            setInterval(updateTimer, 1000);
         });
 
         // Counter untuk warning
@@ -187,12 +193,16 @@
 
         // Event: document visibility berubah (misalnya, tab berubah atau minimize)
         document.addEventListener("visibilitychange", function() {
-            if (examJustStarted) return; // Abaikan jika ujian baru saja dimulai
+            if (examJustStarted) return;
             if (document.visibilityState === "hidden") {
                 wasHidden = true;
             } else if (document.visibilityState === "visible" && wasHidden) {
                 wasHidden = false;
                 handleWarningEvent("Anda berpindah tab atau aplikasi!");
+                // Tambahkan pengecekan fullscreen
+                if (!document.fullscreenElement) {
+                    handleWarningEvent("Anda keluar dari mode fullscreen!");
+                }
             }
         });
         // Event: jendela kehilangan fokus
@@ -214,16 +224,24 @@
         window.addEventListener("resize", function() {
             if (examJustStarted) return; // Abaikan resize awal yang terjadi setelah masuk fullscreen
             logEvent("resize", "outerWidth: " + window.outerWidth + ", outerHeight: " + window.outerHeight);
+
+            // Jika tidak dalam fullscreen, anggap sebagai pelanggaran
+            if (!document.fullscreenElement) {
+                handleWarningEvent("Anda keluar dari mode fullscreen!");
+            }
+
+            // Peringatan untuk perubahan ukuran jendela
             if (window.outerWidth < screen.width || window.outerHeight < screen.height) {
                 handleWarningEvent("Ukuran jendela telah diubah!");
             }
         });
+
         let examFinished = false;
         // Logika pemberian warning dan force finish
         function handleWarningEvent(message) {
             if (examFinished) return; // kalau sudah finished, jangan eksekusi lagi
             if (Date.now() < suppressWarningsUntil) return;
-            suppressWarningsUntil = Date.now() + 5000;
+            suppressWarningsUntil = Date.now() + 1000;
 
             warnings++;
             if (warnings === 1) {
@@ -347,19 +365,23 @@
 
         // Fungsi untuk update tampilan tombol navigasi
         function updateNavButtons() {
-            // Sembunyikan tombol "Soal Sebelumnya" jika di soal pertama
-            document.getElementById('prev-btn').style.display = (currentQuestion === 0) ? 'none' : 'inline-block';
-            // Ubah teks tombol "Soal Setelahnya" menjadi "Submit Ujian" jika di soal terakhir
+            let activeForm = document.querySelector(`#question-${currentQuestion} .answer-form`);
+            let answered = false;
+            if (activeForm) {
+                let selected = activeForm.querySelector('input:checked');
+                if (selected) {
+                    answered = true;
+                }
+            }
+            if (answered) {
+                document.getElementById('navigation').classList.remove('hidden');
+            } else {
+                document.getElementById('navigation').classList.add('hidden');
+            }
+            // Karena tidak ada tombol kembali dan tombol daftar, tidak perlu mengatur tampilan lain.
+            // Pada tombol NEXT, jika soal terakhir, ubah teksnya menjadi "Submit Ujian", jika tidak tetap "Soal Setelahnya"
             document.getElementById('next-btn').textContent = (currentQuestion === totalSoal - 1) ? 'Submit Ujian' : 'Soal Setelahnya';
         }
-
-        // Event listener untuk tombol navigasi
-        document.getElementById('prev-btn').addEventListener('click', function() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                showQuestion(currentQuestion);
-            }
-        });
 
         document.getElementById('next-btn').addEventListener('click', function() {
             if (currentQuestion === totalSoal - 1) {
@@ -383,26 +405,11 @@
             }
         });
 
-        // Tombol "Daftar Soal" untuk menampilkan popup daftar soal
-        document.getElementById('daftar-soal-btn').addEventListener('click', function() {
-            let htmlContent = '<div class="grid grid-cols-5 gap-2">';
-            for (let i = 0; i < totalSoal; i++) {
-                let bgColor = answerStatus[i] ? 'bg-green-400' : 'bg-white';
-                htmlContent += `<div class="p-2 border rounded cursor-pointer ${bgColor}" onclick="jumpToQuestion(${i})">${i+1}</div>`;
-            }
-            htmlContent += '</div>';
-            Swal.fire({
-                title: 'Daftar Soal',
-                html: htmlContent,
-                showConfirmButton: false
-            });
-        });
-
-        // Fungsi lompat ke soal tertentu
-        function jumpToQuestion(index) {
-            currentQuestion = index;
-            showQuestion(currentQuestion);
-            Swal.close();
+        if (document.getElementById('prev-btn')) {
+            document.getElementById('prev-btn').style.display = 'none';
+        }
+        if (document.getElementById('daftar-soal-btn')) {
+            document.getElementById('daftar-soal-btn').style.display = 'none';
         }
 
         // Fungsi untuk submit ujian (digunakan saat waktu habis atau submit manual)
@@ -498,10 +505,7 @@
             document.getElementById('questions-container').classList.remove('hidden');
             document.getElementById('navigation').classList.remove('hidden');
             document.getElementById('countdown-timer').classList.remove('hidden');
-            // Tampilkan soal pertama
-            showQuestion(currentQuestion);
-            // Mulai timer setiap detik
-            setInterval(updateTimer, 1000);
+
         });
 
 
@@ -512,18 +516,13 @@
         document.querySelectorAll('.answer-form').forEach(form => {
             form.addEventListener('change', function() {
                 const questionId = this.getAttribute('data-question-id');
-                // Ambil nilai jawaban dari input radio yang dipilih
-                let answer = this.querySelector('input[name="answer-' + questionId + '"]:checked');
-                if (answer) {
-                    answer = answer.value;
-                } else {
-                    answer = '';
-                }
-                // Tandai soal ini sebagai sudah dijawab di array status
+                let answerElement = this.querySelector('input[name="answer-' + questionId + '"]:checked');
+                let answer = answerElement ? answerElement.value : '';
+                // Tandai soal aktif sudah dijawab
                 answerStatus[currentQuestion] = true;
                 saveExamState();
 
-                // Kirim Ajax untuk simpan jawaban menggunakan variabel yang sudah didefinisikan
+                // Kirim jawaban ke server secara segera
                 fetch(quizAnswerRoute, {
                         method: 'POST',
                         headers: {
@@ -539,6 +538,8 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("Jawaban tersimpan:", data);
+                        // Tampilkan navigasi (NEXT) hanya jika jawaban telah dipilih
+                        document.getElementById('navigation').classList.remove('hidden');
                     })
                     .catch(err => console.error(err));
             });
