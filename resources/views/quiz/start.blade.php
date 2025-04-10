@@ -109,6 +109,8 @@
     </div>
 
     <script>
+        let suppressWarningsUntil = 0;
+        let examJustStarted = true;
         // Fungsi untuk meminta fullscreen
         function requestFullScreen() {
             const docElm = document.documentElement;
@@ -128,8 +130,15 @@
             requestFullScreen();
 
             const rules = document.getElementById('exam-rules');
-            rules.classList.add('hidden');
+            if (rules) {
+                rules.classList.add('hidden');
+            }
             this.style.display = "none";
+            // Set flag examJustStarted, dan reset setelah 3 detik (sesuaikan dengan kebutuhan)
+            examJustStarted = true;
+            setTimeout(() => {
+                examJustStarted = false;
+            }, 2000);
         });
 
         // Counter untuk warning
@@ -178,11 +187,11 @@
 
         // Event: document visibility berubah (misalnya, tab berubah atau minimize)
         document.addEventListener("visibilitychange", function() {
+            if (examJustStarted) return; // Abaikan jika ujian baru saja dimulai
             if (document.visibilityState === "hidden") {
                 wasHidden = true;
             } else if (document.visibilityState === "visible" && wasHidden) {
                 wasHidden = false;
-                // Panggil peringatan sekali
                 handleWarningEvent("Anda berpindah tab atau aplikasi!");
             }
         });
@@ -194,6 +203,7 @@
 
         // Event: perubahan fullscreen (misalnya, user menekan ESC)
         document.addEventListener('fullscreenchange', function() {
+            if (examJustStarted) return; // Abaikan perubahan fullscreen awal
             logEvent("fullscreenchange", "fullscreenElement: " + document.fullscreenElement);
             if (!document.fullscreenElement) {
                 handleWarningEvent("Anda keluar dari mode fullscreen!");
@@ -202,8 +212,8 @@
 
         // Event: resize jendela (misalnya, user mengecilkan ukuran jendela)
         window.addEventListener("resize", function() {
+            if (examJustStarted) return; // Abaikan resize awal yang terjadi setelah masuk fullscreen
             logEvent("resize", "outerWidth: " + window.outerWidth + ", outerHeight: " + window.outerHeight);
-            // Jika ukuran jendela berkurang dari ukuran layar penuh, anggap sebagai pelanggaran
             if (window.outerWidth < screen.width || window.outerHeight < screen.height) {
                 handleWarningEvent("Ukuran jendela telah diubah!");
             }
@@ -212,6 +222,8 @@
         // Logika pemberian warning dan force finish
         function handleWarningEvent(message) {
             if (examFinished) return; // kalau sudah finished, jangan eksekusi lagi
+            if (Date.now() < suppressWarningsUntil) return;
+            suppressWarningsUntil = Date.now() + 5000;
 
             warnings++;
             if (warnings === 1) {
@@ -462,10 +474,10 @@
             }
 
             if (remainingSeconds <= 0) {
-                submitExam(true); 
+                submitExam(true);
             } else {
                 remainingSeconds--;
-                saveExamState(); 
+                saveExamState();
             }
         }
 
