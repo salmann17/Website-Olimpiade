@@ -157,7 +157,7 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        $stages = ['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal'];
+        $stages = ['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal', 'Uji Coba'];
         $warningData = [];
 
         foreach ($stages as $stage) {

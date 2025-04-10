@@ -20,14 +20,20 @@
         <div id="exam-rules" class="max-w-3xl mx-auto mt-8 mb-6 p-6 bg-[#002855] text-white rounded-2xl shadow-2xl shadow-black/40">
             <h2 class="text-2xl font-bold mb-4 text-center text-white">Aturan Ujian</h2>
             <ol class="list-decimal list-inside space-y-2 text-white text-xl leading-relaxed">
+                <li class="ml-4">GUNAKAN PERANGKAT KERAS DAN JARINGAN YANG STABIL</li>
                 <li class="ml-4">UJIAN HARUS DISELESAIKAN DALAM WAKTU YANG TELAH DITENTUKAN TANPA PERPANJANGAN WAKTU.</li>
+                <li class="ml-4">SEGALA TINDAKAN KECURANGAN TELAH DIATUR DALAM PENGERJAAN SOAL.</li>
+                <li class="ml-4">DILARANG KERAS BEKERJA SAMA DENGAN TIM LAIN.</li>
                 <li class="ml-4">DILARANG MEMBUKA TAB BARU ATAU BERPINDAH JENDELA SELAMA UJIAN BERLANGSUNG.</li>
                 <li class="ml-4">PESERTA UJIAN WAJIB MENGAKTIFKAN MODE LAYAR PENUH SAAT MEMULAI UJIAN.</li>
                 <li class="ml-4">SETIAP PELANGGARAN AKAN TERCATAT DAN DAPAT MENYEBABKAN DISKUALIFIKASI.</li>
                 <li class="ml-4">GUNAKAN PERANGKAT YANG STABIL DAN TERHUBUNG KE INTERNET DENGAN BAIK.</li>
                 <li class="ml-4">JAWABAN YANG SUDAH DIKIRIM TIDAK DAPAT DIUBAH KEMBALI.</li>
                 <li class="ml-4">DILARANG KERAS BEKERJA SAMA DENGAN PESERTA LAIN ATAU PIHAK KETIGA.</li>
+                <li class="ml-4">SEGERA HUBUNGI PENGAWAS UJIAN MELALUI KANAL RESMI JIKA TERKENA GANGGUAN.</li>
                 <li class="ml-4">SEMUA JAWABAN AKAN DIPANTAU DAN DIPERIKSA MENGGUNAKAN SISTEM ANTI-KECURANGAN OTOMATIS.</li>
+                <li class="ml-4">PESERTA WAJIB MENJAWAB PERTANYAAN UNTUK DAPAT MELANJUTKAN PERTANYAAN BERIKUTNYA.</li>
+                <li class="ml-4">PERTANYAAN TIDAK DAPAT KEMBALI KE PERTANYAAN SEBELUMNYA</li>
             </ol>
         </div>
         <div class="flex justify-center">
@@ -95,7 +101,7 @@
         </div>
 
         <!-- Navigasi Soal -->
-        <div id="navigation" class="flex justify-start mt-6 hidden">
+        <div id="navigation" class="flex justify-end mt-6 hidden">
             <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded shadow">Soal Setelahnya</button>
         </div>
 
