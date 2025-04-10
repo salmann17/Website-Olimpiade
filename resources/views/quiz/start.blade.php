@@ -11,24 +11,24 @@
 </head>
 
 <body class="bg-white min-h-screen">
-    <img src="{{ asset('bi.png') }}" alt="BI Logo" class="absolute top-0 left-0 m-4 h-12 opacity-80">
-    <img src="{{ asset('genbi.png') }}" alt="GenBI Logo" class="absolute top-0 right-0 m-4 h-12 opacity-80">
+    <img src="{{ asset('bi.png') }}" alt="BI Logo" class="absolute top-0 left-0 m-4 h-[3.5rem] opacity-80">
+    <img src="{{ asset('genbi.png') }}" alt="GenBI Logo" class="absolute top-0 right-0 m-4 h-[3.5rem] opacity-80">
+
+
     <div id="exam-content" class="p-6 pt-20">
         <h1 class="text-center text-3xl font-bold text-white my-4"></h1>
         <!-- Tombol untuk memulai fullscreen -->
         <div id="exam-rules" class="max-w-3xl mx-auto mt-8 mb-6 p-6 bg-white rounded shadow">
             <h2 class="text-2xl font-bold mb-4 text-center">Aturan Ujian</h2>
             <ol class="list-decimal list-inside space-y-2 text-gray-700 text-xl">
-                <li>Ujian harus diselesaikan dalam waktu yang telah ditentukan tanpa perpanjangan waktu.</li>
-                <li>Dilarang membuka tab baru atau berpindah jendela selama ujian berlangsung.</li>
-                <li>Peserta ujian wajib mengaktifkan mode layar penuh saat memulai ujian.</li>
-                <li>Setiap pelanggaran akan tercatat dan dapat menyebabkan diskualifikasi.</li>
-                <li>Gunakan perangkat yang stabil dan terhubung ke internet dengan baik.</li>
-                <li>Jawaban yang sudah dikirim tidak dapat diubah kembali.</li>
-                <li>Dilarang keras bekerja sama dengan peserta lain atau pihak ketiga.</li>
-                <li>Pastikan suara dan kamera (jika diperlukan) aktif selama ujian berlangsung.</li>
-                <li>Jika terjadi gangguan teknis, segera hubungi pengawas ujian melalui kanal resmi.</li>
-                <li>Semua jawaban akan dipantau dan diperiksa menggunakan sistem anti-kecurangan otomatis.</li>
+                <li>UJIAN HARUS DISELESAIKAN DALAM WAKTU YANG TELAH DITENTUKAN TANPA PERPANJANGAN WAKTU.</li>
+                <li>DILARANG MEMBUKA TAB BARU ATAU BERPINDAH JENDELA SELAMA UJIAN BERLANGSUNG.</li>
+                <li>PESERTA UJIAN WAJIB MENGAKTIFKAN MODE LAYAR PENUH SAAT MEMULAI UJIAN.</li>
+                <li>SETIAP PELANGGARAN AKAN TERCATAT DAN DAPAT MENYEBABKAN DISKUALIFIKASI.</li>
+                <li>GUNAKAN PERANGKAT YANG STABIL DAN TERHUBUNG KE INTERNET DENGAN BAIK.</li>
+                <li>JAWABAN YANG SUDAH DIKIRIM TIDAK DAPAT DIUBAH KEMBALI.</li>
+                <li>DILARANG KERAS BEKERJA SAMA DENGAN PESERTA LAIN ATAU PIHAK KETIGA.</li>
+                <li>SEMUA JAWABAN AKAN DIPANTAU DAN DIPERIKSA MENGGUNAKAN SISTEM ANTI-KECURANGAN OTOMATIS.</li>
             </ol>
         </div>
         <div class="flex justify-center">
@@ -140,15 +140,15 @@
 
             document.getElementById('questions-container').classList.remove('hidden');
             document.getElementById('countdown-timer').classList.remove('hidden');
-         
+
             showQuestion(currentQuestion);
-        
+
             setInterval(updateTimer, 1000);
         });
 
-        
+
         let warnings = 0;
-        const maxWarnings = 2; 
+        const maxWarnings = 2;
 
         // Fungsi AJAX untuk meng-update warning (warning pertama)
         function sendWarning() {
@@ -230,7 +230,7 @@
         let examFinished = false;
         // Logika pemberian warning dan force finish
         function handleWarningEvent(message) {
-            if (examFinished) return; 
+            if (examFinished) return;
             if (Date.now() < suppressWarningsUntil) return;
             suppressWarningsUntil = Date.now() + 1000;
 
@@ -471,7 +471,7 @@
 
         function startCountdown(durationInMinutes) {
             remainingSeconds = durationInMinutes * 60;
-            updateTimer(); 
+            updateTimer();
 
             const interval = setInterval(() => {
                 updateTimer();
