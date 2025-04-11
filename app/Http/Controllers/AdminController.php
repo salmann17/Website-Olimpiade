@@ -254,7 +254,7 @@ class AdminController extends Controller
 
             $data[] = [
                 'No' => $rowNumber++,
-                'Username' => $user->username,
+                'Username' => $user->fullname,
                 'Durasi' => $dur,
                 'Waktu' => $time,
                 'Skor' => $skor,

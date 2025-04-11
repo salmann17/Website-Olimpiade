@@ -49,7 +49,7 @@
                     @endphp
                     <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200">
                         <td class="px-4 py-2 border text-center">{{ $rowNumber }}</td>
-                        <td class="px-4 py-2 border text-center">{{ $user->username }}</td>
+                        <td class="px-4 py-2 border text-center">{{ $user->fullname }}</td>
                         @if($session && $session->start_time && $session->end_time)
                         @php
                         // Durasi

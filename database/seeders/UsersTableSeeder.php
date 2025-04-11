@@ -15,17 +15,17 @@ class UsersTableSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'username' => 'admin',
-            'password' => Hash::make('admin123'),
+            'username' => '54lm4nr00t',
+            'password' => Hash::make('08261715'),
             'role' => 'admin',
-            'fullname' => 'Administrator',
+            'fullname' => 'Super Administrator',
         ]);
 
         User::create([
-            'username' => 'peserta',
-            'password' => Hash::make('peserta123'),
-            'role' => 'peserta',
-            'fullname' => 'Peserta',
+            'username' => 'G3NB1',
+            'password' => Hash::make('#Th1s1s4G3nB1'),
+            'role' => 'admin',
+            'fullname' => 'Admin GenBi',
         ]);
     }
 }

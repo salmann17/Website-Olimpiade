@@ -38,7 +38,7 @@
                     @endphp
                     <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 group">
                         <td class="px-4 py-2 border text-center">{{ $rowNumber }}</td>
-                        <td class="px-4 py-2 border text-center">{{ $user->username }}</td>
+                        <td class="px-4 py-2 border text-center">{{ $user->fullname }}</td>
                         @if($session)
                         @php
                         if ($session->warning_count == 0) {
