@@ -15,6 +15,7 @@ class QuizAnswer extends Model
         'question_id',
         'answer',
         'is_correct',
+        'comment',
     ];
 
     public function session(): BelongsTo

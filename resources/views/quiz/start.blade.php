@@ -60,6 +60,18 @@
                 <div class="text-center mb-4">
                     <img src="{{ asset('75k.jpg') }}" alt="Gambar 75k" class="mx-auto w-1/4">
                 </div>
+                @elseif($question->id == 116 )
+                <div class="text-center mb-4">
+                    <img src="{{ asset('ad-as.jpg') }}" alt="Gambar ad-as" class="mx-auto w-1/4">
+                </div>
+                @elseif($question->id == 131 )
+                <div class="text-center mb-4">
+                    <img src="{{ asset('100k.jpg') }}" alt="Gambar 100k" class="mx-auto w-1/4">
+                </div>
+                @elseif($question->id == 143 )
+                <div class="text-center mb-4">
+                    <img src="{{ asset('kasus.png') }}" alt="Gambar kasus" class="mx-auto w-1/4">
+                </div>
                 @endif
                 <p class="mb-4 text-black text-2xl">{!! nl2br(e($question->question)) !!}</p>
 
@@ -93,6 +105,30 @@
                             <span class="ml-5 text-lg">{{ $question->pilihan_d }}</span>
                         </label>
                         @endif
+                    </div>
+                </form>
+
+                @elseif($question->type === 'true_false')
+                <form class="answer-form" data-question-id="{{ $question->id }}">
+                    <div class="grid grid-cols-2 gap-4 w-full mx-auto">
+                        @if($question->pilihan_a)
+                        <label class="relative block bg-[#002855] text-white rounded-md p-4 cursor-pointer hover:bg-blue-400 w-full">
+                            <input type="radio" name="answer-{{ $question->id }}" value="true" class="absolute">
+                            <span class="ml-5 text-lg">{{ $question->pilihan_a }}</span>
+                        </label>
+                        @endif
+
+                        @if($question->pilihan_b)
+                        <label class="relative block bg-[#002855] text-white rounded-md p-4 cursor-pointer hover:bg-blue-600 w-full">
+                            <input type="radio" name="answer-{{ $question->id }}" value="false" class="absolute">
+                            <span class="ml-5 text-lg">{{ $question->pilihan_b }}</span>
+                        </label>
+                        @endif
+                    </div>
+
+                    <!-- Input Alasan -->
+                    <div class="mt-6">
+                        <textarea name="comment-{{ $question->id }}" class="w-full p-4 mt-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Berikan alasan Anda..."></textarea>
                     </div>
                 </form>
                 @endif
@@ -259,9 +295,12 @@
                     const questionId = form.getAttribute('data-question-id');
                     let answerInput = form.querySelector('input[name="answer-' + questionId + '"]:checked');
                     let answer = answerInput ? answerInput.value : '';
+                    let commentInput = form.querySelector('textarea[name="comment-' + questionId + '"]');
+                    let comment = commentInput ? commentInput.value : null;
                     finalAnswers.push({
                         question_id: questionId,
-                        answer: answer
+                        answer: answer,
+                        comment: comment
                     });
                 });
                 forceFinish(finalAnswers).then((data) => {
@@ -406,9 +445,13 @@
                 const questionId = form.getAttribute('data-question-id');
                 let answerInput = form.querySelector('input[name="answer-' + questionId + '"]:checked');
                 let answer = answerInput ? answerInput.value : '';
+                let commentInput = form.querySelector('textarea[name="comment-' + questionId + '"]');
+                let comment = commentInput ? commentInput.value : null;
+
                 finalAnswers.push({
                     question_id: questionId,
-                    answer: answer
+                    answer: answer,
+                    comment: comment
                 });
             });
 

@@ -79,7 +79,18 @@ class QuizController extends Controller
                         if ($correctNormalized === $answerNormalized) {
                             $isCorrect = 1;
                         }
+                        elseif ($question->type === 'true_false') {
+                            $normalizedChoices = ['true', 'false'];
+                            if (in_array($correctNormalized, $normalizedChoices) && in_array($answerNormalized, $normalizedChoices)) {
+                                if ($correctNormalized === $answerNormalized) {
+                                    $isCorrect = 1;
+                                }
+                            }
+                        }
                     }
+
+                    $comment = isset($data['comment']) ? $data['comment'] : null;
+
                     QuizAnswer::updateOrCreate(
                         [
                             'quiz_session_id' => $quizSession->id,
@@ -88,6 +99,7 @@ class QuizController extends Controller
                         [
                             'answer'     => $data['answer'],
                             'is_correct' => $isCorrect,
+                            'comment'    => $comment,
                         ]
                     );
                 }
@@ -112,7 +124,12 @@ class QuizController extends Controller
                 ->where('is_correct', true)
                 ->count();
             $quizSession->skor = $correctCount * 2;
-        }
+        } elseif (in_array($schedule->id, [3])) {
+            $correctCount = QuizAnswer::where('quiz_session_id', $quizSession->id)
+                ->where('is_correct', true)
+                ->count();
+            $quizSession->skor = $correctCount * (100 / 30);
+        } 
         
         $quizSession->save();
 
