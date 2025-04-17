@@ -58,6 +58,10 @@
             <div class="bg-yellow-100 text-yellow-800 text-center py-2 font-semibold">
                 Waktu habis
             </div>
+            @else
+            <div class="bg-gray-100 text-gray-800 text-center py-2 font-semibold">
+                Anda sedang mengerjakan
+            </div>
             @endif
         </div>
         @endforeach

@@ -3,8 +3,8 @@
 @section('content')
 <div class="p-6">
     <!-- Baris Pertama: Statistik Warning Count -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        @foreach(['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal', 'Uji Coba'] as $stage)
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        @foreach(['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal'] as $stage)
         <div class="bg-transparent rounded-lg p-4 shadow-lg">
             <h3 class="text-lg font-semibold mb-4 text-black">{{ $stage }} - Warning Count</h3>
             <canvas id="warningChart{{ $loop->index }}" class="w-full h-64"></canvas>
@@ -13,8 +13,8 @@
     </div>
 
     <!-- Baris Kedua: Statistik Nilai -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        @foreach(['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal', 'Uji Coba'] as $stage)
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        @foreach(['Babak Penyisihan 1', 'Babak Penyisihan 2', 'Babak Semifinal'] as $stage)
         <div class="bg-transparent rounded-lg p-4 shadow-lg">
             <h3 class="text-lg font-semibold mb-4 text-black">{{ $stage }} - Distribusi Nilai</h3>
             <canvas id="scoreChart{{ $loop->index }}" class="w-full h-64"></canvas>
