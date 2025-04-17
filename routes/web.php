@@ -23,7 +23,7 @@ Route::middleware([\Illuminate\Auth\Middleware\Authenticate::class])->group(func
         Route::get('/admin/pantau', [AdminController::class, 'pantauUjian'])->name('admin.pantau.ujian');
         Route::get('/admin/hasil', [AdminController::class, 'hasilUjian'])->name('admin.hasil.ujian');
         Route::get('/admin/hasil-ujian/export', [AdminController::class, 'export'])->name('admin.hasil.ujian.export');
-
+        Route::get('/admin/export-detail/{user}', [AdminController::class, 'exportDetail']);
     });
 
 

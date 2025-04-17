@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
+use App\Models\QuizAnswer;
 use App\Models\QuizSchedule;
 use App\Models\QuizSession;
 use App\Models\User;
@@ -262,5 +264,25 @@ class AdminController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function exportDetail($userId)
+    {
+        $session = QuizSession::where('user_id', $userId)->where('quiz_schedule_id', 3)->first();
+        if (!$session) return response()->json([]);
+
+        $answers = QuizAnswer::where('quiz_session_id', $session->id)->get();
+        $questions = Question::whereIn('id', $answers->pluck('question_id'))->get()->keyBy('id');
+
+        $result = $answers->map(function ($ans) use ($questions) {
+            return [
+                'question' => $questions[$ans->question_id]->question ?? 'N/A',
+                'answer'   => $ans->answer,
+                'comment'  => $ans->comment
+            ];
+        });
+
+
+        return response()->json($result);
     }
 }

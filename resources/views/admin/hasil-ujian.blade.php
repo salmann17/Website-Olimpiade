@@ -39,6 +39,9 @@
                         <th class="px-4 py-2 text-white">Durasi</th>
                         <th class="px-4 py-2 text-white">Waktu</th>
                         <th class="px-4 py-2 text-white">Skor</th>
+                        @if($selectedScheduleId == 3 )
+                        <th class="px-4 py-2 text-white">Data Isian</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -68,10 +71,24 @@
                         <td class="px-4 py-2 border text-center">{{ $dur }}</td>
                         <td class="px-4 py-2 border text-center">{{ $time }}</td>
                         <td class="px-4 py-2 border text-center">{{ $session->skor }}</td>
+                        @if($selectedScheduleId == 3 && $session)
+                        <td class="px-4 py-2 border text-center">
+                            <button
+                                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+                                onclick="exportDetailExcel({{ $user->id }}, '{{ $user->fullname }}')">
+                                Export Jawaban
+                            </button>
+
+                        </td>
+                        @endif
+
                         @else
                         <td class="px-4 py-2 border text-center">–</td>
                         <td class="px-4 py-2 border text-center">–</td>
                         <td class="px-4 py-2 border text-center">–</td>
+                        @if($selectedScheduleId == 3)
+                        <td class="px-4 py-2 border text-center">–</td>
+                        @endif
                         @endif
                     </tr>
                     @endforeach
@@ -88,6 +105,109 @@
 @endsection
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script>
+    function exportDetailExcel(userId, fullname) {
+        fetch(`/admin/export-detail/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const workbook = new ExcelJS.Workbook();
+                const worksheet = workbook.addWorksheet("Detail Jawaban");
+
+                // Tambahkan nama di atas
+                worksheet.addRow([`Nama Tim : ${fullname}`]);
+                worksheet.addRow([]);
+
+                // Header baris ke-3
+                const header = worksheet.addRow(["Soal", "Jawaban", "Keterangan", "Nilai Tambah"]);
+
+                // Style header: bold, tengah, wrap, dan warna latar
+                header.eachCell(cell => {
+                    cell.font = {
+                        bold: true,
+                        color: {
+                            argb: 'FFFFFFFF'
+                        }
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                        wrapText: true
+                    };
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FF004A80'
+                        } // Biru gelap
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin'
+                        },
+                        left: {
+                            style: 'thin'
+                        },
+                        bottom: {
+                            style: 'thin'
+                        },
+                        right: {
+                            style: 'thin'
+                        }
+                    };
+                });
+
+                // Isi data
+                data.forEach(item => {
+                    const row = worksheet.addRow([
+                        item.question,
+                        item.answer,
+                        item.comment || '',
+                        ''
+                    ]);
+                    row.eachCell(cell => {
+                        cell.alignment = {
+                            vertical: 'middle',
+                            horizontal: 'center',
+                            wrapText: true
+                        };
+                        cell.border = {
+                            top: {
+                                style: 'thin'
+                            },
+                            left: {
+                                style: 'thin'
+                            },
+                            bottom: {
+                                style: 'thin'
+                            },
+                            right: {
+                                style: 'thin'
+                            }
+                        };
+                    });
+                });
+
+                // Atur lebar kolom agar muat isi
+                worksheet.columns.forEach(col => {
+                    col.width = 40;
+                });
+
+                // Simpan
+                workbook.xlsx.writeBuffer().then(buffer => {
+                    const blob = new Blob([buffer], {
+                        type: "application/octet-stream"
+                    });
+                    saveAs(blob, `DetailJawaban-${fullname}.xlsx`);
+                });
+            })
+            .catch(err => {
+                alert("Gagal mengambil data.");
+                console.error(err);
+            });
+    }
+</script>
+
 <script>
     const scheduleTitle = "{{ optional($schedules->firstWhere('id', $selectedScheduleId))->title ?? '' }}";
     let fileName = 'hasilujian';
@@ -109,7 +229,7 @@
                         pattern: 'solid',
                         fgColor: {
                             argb: 'FF5F27CD'
-                        } 
+                        }
                     };
                     cell.font = {
                         bold: true,
@@ -163,7 +283,7 @@
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = fileName + '.xlsx'; 
+                    a.download = fileName + '.xlsx';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
