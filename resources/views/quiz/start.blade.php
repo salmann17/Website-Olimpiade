@@ -539,14 +539,19 @@
         const csrfToken = "{{ csrf_token() }}";
         const quizSessionId = "{{ $quizSession->id }}";
 
-        document.querySelectorAll('.answer-form').forEach(form => {
-            form.addEventListener('change', function() {
-                const questionId = this.getAttribute('data-question-id');
-                let answerElement = this.querySelector('input[name="answer-' + questionId + '"]:checked');
-                let answer = answerElement ? answerElement.value : '';
+        document.querySelectorAll('.answer-form input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const form = this.closest('.answer-form');
+                const questionId = form.getAttribute('data-question-id');
+                const answer = this.value;
+
                 answerStatus[currentQuestion] = true;
                 saveExamState();
 
+                // Tampilkan tombol navigasi hanya jika radio dipilih
+                document.getElementById('navigation').classList.remove('hidden');
+
+                // Kirim jawaban ke server
                 fetch(quizAnswerRoute, {
                         method: 'POST',
                         headers: {
@@ -562,7 +567,6 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log("Jawaban tersimpan:", data);
-                        document.getElementById('navigation').classList.remove('hidden');
                     })
                     .catch(err => console.error(err));
             });
