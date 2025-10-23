@@ -1,66 +1,52 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">
+    <img src="https://readme-typing-svg.herokuapp.com?font=Permanent+Marker&size=35&pause=1000&color=1F37F7&width=435&lines=Documentation+Project" alt="Typing SVG" />
+</h1>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<h2 align="center">Admin Dashboard – Real-time Monitoring</h2>
+<h3 align="center">The admin dashboard displays exam statistics per round, visualized with charts indicating how many participants are safe, warned once, or disqualified due to two system alerts.</h3>
+<img align="center" src="admin_dashboard.png" target="_blank" />
 
-## About Laravel
+<h2 align="center">Admin – Exam Result Analytics</h2>
+<h3 align="center">Scores are automatically sorted from highest to lowest, with tie-breaking based on completion time. For essay-based rounds, admins can export individual answers. Full data export is supported.</h3>
+<img align="center" src="admin_hasilujian_babakpilgan.png" target="_blank" />
+<img align="center" src="admin_hasilujian_babakisian.png" target="_blank" />
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<h2 align="center">Admin – Live Proctoring Table</h2>
+<h3 align="center">The admin panel includes a live monitoring table that displays participant status in real time. Each user is flagged with a color: green for safe, yellow for first warning, and red for disqualification. This feature helps maintain exam integrity by detecting suspicious actions like exiting fullscreen or switching tabs.</h3>
+<img align="center" src="admin_pemantauanujian.png" target="_blank" />
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<h2 align="center">Admin – Participant Management</h2>
+<h3 align="center">Admins can view and edit participant details, including usernames and passwords, through a centralized participant list feature.</h3>
+<img align="center" src="admin_listpeserta.png" target="_blank" />
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+<h2 align="center">Admin – Manual Registration</h2>
+<h3 align="center">Admins can register new participants directly into the system</h3>
+<img align="center" src="admin_registpeserta.png" target="_blank" />
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+<h2 align="center">Participant Dashboard Overview</h2>
+<h3 align="center">Participants have a personalized dashboard showing all exam rounds and their status.</h3>
+<img align="center" src="peserta_dashboard.png" target="_blank" />
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+<h2 align="center">Participant – Exam History & Warnings</h2>
+<h3 align="center">Participants can track their completed exams, see how many questions were answered, their completion duration, and whether they were flagged or disqualified.</h3>
+<img align="center" src="peserta_riwayatujian.png" target="_blank" />
 
-## Laravel Sponsors
+<h2 align="center">Participant – Controlled Exam Flow</h2>
+<h3 align="center">Participants enter fullscreen mode when starting an exam. Questions are answered sequentially — no going back, as per committee request.</h3>
+<img align="center" src="peserta_halamanujian.png" target="_blank" />
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+<h2 align="center">Anti-Cheating System</h2>
+<h3 align="center">The system detects when participants exit fullscreen, resize the browser, or use Alt+Tab.
 
-### Premium Partners
+1st warning = Yellow alert in admin view
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+2nd warning = Forced submission & red alert (disqualification)</h3>
+<img align="center" src="peserta_peringatanpertama.png" target="_blank" />
+<img align="center" src="peserta_peringatankedua.png" target="_blank" />
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<h2 align="center">Essay Question Support</h2>
+<h3 align="center">Participants can answer descriptive questions, and responses are fully exportable from the admin panel for detailed review.</h3>
+<img align="center" src="peserta_halamanujian_isian.png" target="_blank" />
